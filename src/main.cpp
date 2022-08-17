@@ -1,6 +1,7 @@
 /*
   DIY Lighty + SD + OLED + 5 way joystick + WS2812B RGB LED
-  Dirk Essl 2020
+  Christian Mertens 2022
+  based on pixelstick by Dirk Essl 2020
   based on Digital Light Wand by Michael Ross
 
   Lighty is for use in specialized Light Painting Photography
