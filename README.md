@@ -22,3 +22,12 @@ This pixelstick has following features:
 - Repeat times
 - Small
 - Lightweight
+
+## Development environment
+
+In the two original projects the Arduino IDE was used. But here you have to install all libraries manually.
+So I decided to use VSCode with the PlatformIO plugin.
+
+**So you can just clone this project and open it in PlatformIO in VSCode.**
+
+The installation of the libraries and the configuration of the board will be done automatically.
