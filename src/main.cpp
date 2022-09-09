@@ -80,7 +80,7 @@ long buffer[STRIP_LENGTH];
 // Setup loop to get everything ready.  This is only run once at power on or reset
 void setup() {
 
-  keypad_setup();
+  keypad.setup();
 
   // check if values in eeprom make sense, otherwise set default value
   if (EEPROM.read(addrbrightness) >= 1 && EEPROM.read(addrbrightness) <= 100) {
@@ -214,8 +214,7 @@ void loop() {
       break;
   }
 
-  int keypress = keypad_read
-();
+  int keypress = keypad.read();
   delay(50);
 
   if ((keypress == 4) || (digitalRead(AuxButton) == LOW)) {   // The select key was pressed
@@ -321,7 +320,7 @@ void loop() {
   }
 
   //if (digitalRead(uppin) == LOW) key = 1;
-  if (digitalRead(uppin) == LOW) {                 // The up key was pressed
+  if (digitalRead(UPPIN) == LOW) {                 // The up key was pressed
     delay(50);
     if (menuItem == 1) {
       menuItem = 6;

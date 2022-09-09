@@ -8,6 +8,7 @@
 #include "display.h"
 #include "keypad.h"
 
+/************** Display Section *************/
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
@@ -15,6 +16,13 @@
 Adafruit_SSD1306 lcd(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 Display display = Display(lcd);
+
+/************** Keypad Section *************/
+KeyPad keypad = KeyPad();
+
+/************** State Machine Section *************/
+#define STATE_DEBUG 1
+
 StateMachine machine = StateMachine();
 
 #endif // __GLOBAL_H__
