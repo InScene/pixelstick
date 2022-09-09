@@ -148,7 +148,7 @@ void setup() {
 void loop() {
   keypad.read();
   machine.run();
-  delay(100);
+  delay(250);
 }
 
 // The Main Loop for the program starts here...
