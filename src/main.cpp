@@ -30,12 +30,6 @@
 // Library initialization
 #include "main.h"
 
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-
-#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
-Adafruit_SSD1306 lcd(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-
 // Pin assignments for the Arduino (Make changes to these if you use different Pins)
 #define SDssPin 53                        // SD card CS pin
 int NPPin = 6;                            // Data Pin for the NeoPixel LED Strip
@@ -74,9 +68,6 @@ byte x;
 // Declaring the two LED Strips and pin assignments to each
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(STRIP_LENGTH, NPPin, NEO_GRB + NEO_KHZ800);
 
-int key = -1;
-int oldkey = -1;
-
 // SD Card Variables and assignments
 File root;
 File dataFile;
@@ -86,22 +77,10 @@ int m_NumberOfFiles = 0;
 String m_FileNames[200];
 long buffer[STRIP_LENGTH];
 
-// Setup 5 way joystick
-
-int uppin = 22;
-int downpin = 23;
-int leftpin = 24;
-int rightpin = 25;
-int entpin = 26;
-
 // Setup loop to get everything ready.  This is only run once at power on or reset
 void setup() {
 
-  pinMode(downpin, INPUT_PULLUP);
-  pinMode(leftpin, INPUT_PULLUP);
-  pinMode(rightpin, INPUT_PULLUP);
-  pinMode(entpin, INPUT_PULLUP);
-  pinMode(uppin, INPUT_PULLUP);
+  keypad_setup();
 
   // check if values in eeprom make sense, otherwise set default value
   if (EEPROM.read(addrbrightness) >= 1 && EEPROM.read(addrbrightness) <= 100) {
@@ -124,8 +103,8 @@ void setup() {
     }
   */
 
-  //Serial.begin(9600);
-
+  Serial.begin(9600);
+  
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if (!lcd.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
     //Serial.println(F("SSD1306 allocation failed"));
@@ -235,7 +214,8 @@ void loop() {
       break;
   }
 
-  int keypress = ReadKeypad();
+  int keypress = keypad_read
+();
   delay(50);
 
   if ((keypress == 4) || (digitalRead(AuxButton) == LOW)) {   // The select key was pressed
@@ -387,41 +367,6 @@ void setupSDcard() {
   isort(m_FileNames, m_NumberOfFiles);
   m_CurrentFilename = m_FileNames[0];
   DisplayCurrentFilename();
-}
-
-int ReadKeypad() {
-  {
-    if (digitalRead(uppin) == LOW) key = 1;
-    else key = -1;
-  }
-  {
-    if (digitalRead(downpin) == LOW) key = 2;
-    else key = -1;
-  }
-  {
-    if (digitalRead(leftpin) == LOW) key = 3;
-    //else key = oldkey;
-  }
-  {
-    if (digitalRead(rightpin) == LOW) key = 0;
-    //else key = oldkey;
-  }
-  {
-    if (digitalRead(entpin) == LOW) key = 4;
-    //else key = oldkey;
-  }
-
-  if (key != oldkey) {                    // if keypress is detected
-    delay(250);                            // wait for debounce time
-    key = key;
-    if (key != oldkey) {
-      oldkey = key;
-      if (key >= 0) {
-        return key;
-      }
-    }
-  }
-  return key;
 }
 
 void SendFile(String Filename) {
