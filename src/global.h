@@ -4,6 +4,7 @@
 #ifndef __GLOBAL_H__
 #define __GLOBAL_H__
 
+#include <StateMachine.h>
 #include "display.h"
 #include "keypad.h"
 
@@ -14,5 +15,6 @@
 Adafruit_SSD1306 lcd(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 Display display = Display(lcd);
+StateMachine machine = StateMachine();
 
 #endif // __GLOBAL_H__
