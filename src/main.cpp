@@ -139,11 +139,21 @@ void setup() {
   setupLEDs();
   setupSDcard();
   ClearStrip(0);
+
+  state_machine_setup();
 }
 
 // The Main Loop for the program starts here...
 // This will loop endlessly looking for a key press to perform a function
 void loop() {
+  keypad.read();
+  machine.run();
+  delay(100);
+}
+
+// The Main Loop for the program starts here...
+// This will loop endlessly looking for a key press to perform a function
+void loop_origin() {
 
   switch (menuItem) {
     case 1:

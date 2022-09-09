@@ -36,6 +36,7 @@
 #include <Adafruit_SSD1306.h>
 #include <EEPROM.h>
 #include "global.h"
+#include "state_machine_logic.h"
 
 void setupLEDs();
 void setupSDcard();
