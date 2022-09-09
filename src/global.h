@@ -7,6 +7,7 @@
 #include <StateMachine.h>
 #include "display.h"
 #include "keypad.h"
+#include "logic_values.h"
 
 /************** Display Section *************/
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -24,5 +25,8 @@ KeyPad keypad = KeyPad();
 #define STATE_DEBUG 1
 
 StateMachine machine = StateMachine();
+
+/************** Logic Values Section *************/
+LogicValues logicValues = LogicValues();
 
 #endif // __GLOBAL_H__

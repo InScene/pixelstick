@@ -33,16 +33,16 @@ void s1_2_brightness(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_2_brightness");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_BRIGHTNESS);
+    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_BRIGHTNESS, (uint16_t)logicValues.getBrightness());
   }
 }
 
 void s1_2_1_brightness_inc(){
-
+  logicValues.increaseBrightness();
 }
 
 void s1_2_2_brightness_dec(){
-
+  logicValues.decreaseBrightness();
 }
 
 void s1_3_init_delay(){
@@ -50,16 +50,16 @@ void s1_3_init_delay(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_3_init_delay");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_INIT_DELAY);
+    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_INIT_DELAY, logicValues.getInitDelay());
   }
 }
 
 void s1_3_1_init_delay_inc(){
-
+  logicValues.increaseInitDelay1Sec();
 }
 
 void s1_3_2_init_delay_dec(){
-
+  logicValues.decreaseInitDelay1Sec();
 }
 
 void s1_4_frame_delay(){
@@ -67,16 +67,16 @@ void s1_4_frame_delay(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_4_frame_delay");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_FRAME_DELAY);
+    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_FRAME_DELAY, logicValues.getFrameDelay());
   }
 }
 
 void s1_4_1_frame_delay_inc(){
-
+  logicValues.increaseFrameDelay();
 }
 
 void s1_4_2_frame_delay_dec(){
-
+  logicValues.decreaseFrameDelay();
 }
 
 void s1_5_repeat_times(){
@@ -84,16 +84,16 @@ void s1_5_repeat_times(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_5_repeat_times");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_REPEAT_TIMES);
+    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_REPEAT_TIMES, logicValues.getRepeatTimes());
   }
 }
 
 void s1_5_1_repeat_times_inc(){
-
+  logicValues.increaseRepeatTimes();
 }
 
 void s1_5_2_repeat_times_dec(){
-
+  logicValues.decreaseRepeatTimes();
 }
 
 void s1_6_repeat_delay(){
@@ -101,16 +101,16 @@ void s1_6_repeat_delay(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_6_repeat_delay");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_REPEAT_DELAY);
+    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_REPEAT_DELAY, logicValues.getRepeatDelay());
   }
 }
 
 void s1_6_1_repeat_delay_inc(){
-
+  logicValues.increaseRepeatDelay();
 }
 
 void s1_6_2_repeat_delay_dec(){
-
+  logicValues.decreaseRepeatDelay();
 }
 
 void s1_7_main_menu(){
