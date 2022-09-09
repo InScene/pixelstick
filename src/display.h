@@ -6,14 +6,21 @@
 
 #include <Adafruit_SSD1306.h>
 
-#define MENU_HEADER_ITEM F("LIGHTY")
+#define MENU_HEADER F("LIGHTY")
+
+#define MENU_MAIN_HEADER F("Main Menu ")
+#define MENU_MAIN_FILE F("1:File ")
+
+#define MENU_FILE_HEADER F("1:File ")
+#define MENU_FILE_SELECT F("1_1:File Select ")
+#define MENU_FILE_BRIGHTNESS F("1_2:Brightness ")
+#define MENU_FILE_INIT_DELAY F("1_3:Init Delay ")
+#define MENU_FILE_FRAME_DELAY F("1_4:Frame Delay")
+#define MENU_FILE_REPEAT_TIMES F("1_5:Repeat Times")
+#define MENU_FILE_REPEAT_DELAY F("1_6:Repeat Delay")
+#define MENU_FILE_MAIN_MENU F("1_7:Main Menu")
+
 #define MENU_HEADER_NOW_PLAYING F(" ")
-#define MENU_FILE_SELECT F("1:File Select ")
-#define MENU_BRIGHTNESS F("2:Brightness ")
-#define MENU_INIT_DELAY F("3:Init Delay ")
-#define MENU_FRAME_DELAY F("4:Frame Delay")
-#define MENU_REPEAT_TIMES F("5:Repeat Times")
-#define MENU_REPEAT_DELAY F("6:Repeat Delay")
 #define MENU_NOW_PLAYING F("Now Playing")
 
 class Display
