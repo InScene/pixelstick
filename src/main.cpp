@@ -32,6 +32,7 @@
 
 FileHandler filehandler = FileHandler();
 
+
 String COPYRIGHT_TEXTS[5] = {
   "(c) Christian Mertens 2022",
   "V1.1",
@@ -40,11 +41,9 @@ String COPYRIGHT_TEXTS[5] = {
   "Please wait"
 };
 
-// Pin assignments for the Arduino (Make changes to these if you use different Pins)
-int NPPin = 6;                            // Data Pin for the NeoPixel LED Strip
 
 // Intial Variable declarations and assignments (Make changes to these if you want to change defaults)
-#define STRIP_LENGTH 144                  // Set the number of LEDs the LED Strip
+
 int frameDelay = 15;                      // default for the frame delay
 int menuItem = 1;                         // Variable for current main menu selection
 int initDelay = 0;                        // Variable for delay between button press and start of light sequence
@@ -64,8 +63,6 @@ int addrupdateMode = 50;                       // Variable to keep track of upda
 int addrrepeatTimes = 60;                      // Variable to keep track of number of repeats
 int addrbrightness = 70;                       // Variable and default for the Brightness of the strip
 
-// Declaring the two LED Strips and pin assignments to each
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(STRIP_LENGTH, NPPin, NEO_GRB + NEO_KHZ800);
 
 // Setup loop to get everything ready.  This is only run once at power on or reset
 void setup() {
@@ -101,9 +98,9 @@ void setup() {
 
   delay(1000);
 
-  setupLEDs();
+  stripHandler.setup();
   filehandler.setup();
-  ClearStrip(0);
+  stripHandler.clear();
 
   state_machine_setup();
 }
@@ -213,7 +210,7 @@ void loop_origin() {
     else {
       filehandler.sendFile(filehandler.getFilename());
     }
-    ClearStrip(0);
+    stripHandler.clear();
   }
   if (keypress == 0) {                    // The Right Key was Pressed
     switch (menuItem) {
@@ -304,27 +301,9 @@ void loop_origin() {
   }
 }
 
-void setupLEDs() {
-  strip.begin();
-  strip.show();
-}
-
 void DisplayCurrentFilename() {
   lcd.setCursor(0, 1);
   lcd.print("                ");
   lcd.setCursor(0, 1);
   lcd.print(filehandler.getFilename());
-}
-
-void latchanddelay(int dur) {
-  strip.show();
-  delay(dur);
-}
-
-void ClearStrip(int duration) {
-  int x;
-  for (x = 0; x < STRIP_LENGTH; x++) {
-    strip.setPixelColor(x, 0);
-  }
-  strip.show();
 }

@@ -2,7 +2,7 @@
   Copyright Christian Mertens 2022
 */
 #include "file_handler.h"
-// TODO: remove global include. It is only for LCD needed
+// TODO: remove global include. It is only for lcd and strip needed
 #include "global.h"
 
 PROGMEM const unsigned char gammaTable[]  = {
@@ -178,11 +178,6 @@ void FileHandler::read_the_file()
   if ((lineLength % 4) != 0)
     lineLength = (lineLength / 4 + 1) * 4;
 
-  // Note:
-  // The x,r,b,g sequence below might need to be changed if your strip is displaying
-  // incorrect colors.  Some strips use an x,r,b,g sequence and some use x,r,g,b
-  // Change the order if needed to make the colors correct.
-
   for (int y = imgHeight; y > 0; y--) {
     int bufpos = 0;
     for (int x = 0; x < displayWidth; x++) {
@@ -191,12 +186,11 @@ void FileHandler::read_the_file()
 
       rgbValues rgbVal = getRGBwithGamma();
 
-// TODO: Set strip value
-      // strip.setPixelColor(x, rgbVal.r, rgbVal.b, rgbVal.g);
-
+    // TODO: Outsourde strip value call
+      stripHandler.setPixelColor(x, rgbVal.r, rgbVal.g, rgbVal.b);
     }
-// TODO: call function latchanddelay
-    // latchanddelay(frameDelay);
+    // TODO: outsource latchanddelay call
+    stripHandler.latchanddelay(logicValues.getFrameDelay());
   }
 }
 

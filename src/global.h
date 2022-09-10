@@ -8,6 +8,7 @@
 #include "display.h"
 #include "keypad.h"
 #include "logic_values.h"
+#include "strip_handler.h"
 
 /************** Display Section *************/
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -28,5 +29,8 @@ StateMachine machine = StateMachine();
 
 /************** Logic Values Section *************/
 LogicValues logicValues = LogicValues();
+
+/************** Strip Section *************/
+StripHandler stripHandler = StripHandler();
 
 #endif // __GLOBAL_H__

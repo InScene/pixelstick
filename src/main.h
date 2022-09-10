@@ -28,17 +28,12 @@
 */
 
 // Library initialization
-#include <Adafruit_NeoPixel.h>           // Library for the WS2812 Neopixel Strip
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
 #include <EEPROM.h>
 #include "global.h"
 #include "state_machine_logic.h"
 #include "file_handler.h"
 
-void setupLEDs();
 void DisplayCurrentFilename();
-void latchanddelay(int dur);
-void ClearStrip(int duration);
