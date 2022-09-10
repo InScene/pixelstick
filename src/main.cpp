@@ -30,23 +30,25 @@
 // Library initialization
 #include "main.h"
 
+FileHandler filehandler = FileHandler();
+
+String COPYRIGHT_TEXTS[5] = {
+  "(c) Christian Mertens 2022",
+  "V1.1",
+  " ",
+  "..Initializing..",
+  "Please wait"
+};
+
 // Pin assignments for the Arduino (Make changes to these if you use different Pins)
-#define SDssPin 53                        // SD card CS pin
 int NPPin = 6;                            // Data Pin for the NeoPixel LED Strip
-int AuxButton = 4;                        // Aux Select Button Pin
-int AuxButtonGND = 5;                     // Aux Select Button Ground Pin
-int g = 0;                                // Variable for the Green Value
-int b = 0;                                // Variable for the Blue Value
-int r = 0;                                // Variable for the Red Value
 
 // Intial Variable declarations and assignments (Make changes to these if you want to change defaults)
 #define STRIP_LENGTH 144                  // Set the number of LEDs the LED Strip
 int frameDelay = 15;                      // default for the frame delay
 int menuItem = 1;                         // Variable for current main menu selection
 int initDelay = 0;                        // Variable for delay between button press and start of light sequence
-int repeat = 0;                           // Variable to select auto repeat (until select button is pressed again)
 int repeatDelay = 0;                      // Variable for delay between repeats
-int updateMode = 0;                       // Variable to keep track of update Modes
 int repeatTimes = 1;                      // Variable to keep track of number of repeats
 int brightness = 50;                      // Variable and default for the Brightness of the strip
 
@@ -62,20 +64,8 @@ int addrupdateMode = 50;                       // Variable to keep track of upda
 int addrrepeatTimes = 60;                      // Variable to keep track of number of repeats
 int addrbrightness = 70;                       // Variable and default for the Brightness of the strip
 
-// Other program variable declarations, assignments, and initializations
-byte x;
-
 // Declaring the two LED Strips and pin assignments to each
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(STRIP_LENGTH, NPPin, NEO_GRB + NEO_KHZ800);
-
-// SD Card Variables and assignments
-File root;
-File dataFile;
-String m_CurrentFilename = "";
-int m_FileIndex = 0;
-int m_NumberOfFiles = 0;
-String m_FileNames[200];
-long buffer[STRIP_LENGTH];
 
 // Setup loop to get everything ready.  This is only run once at power on or reset
 void setup() {
@@ -84,9 +74,9 @@ void setup() {
 
   // check if values in eeprom make sense, otherwise set default value
   if (EEPROM.read(addrbrightness) >= 1 && EEPROM.read(addrbrightness) <= 100) {
-    brightness = EEPROM.read(addrbrightness);
+    logicValues.setBrightness((uint8_t)EEPROM.read(addrbrightness));
   } else {
-    brightness = 50;
+    logicValues.setBrightness(50);
   }
 
   /*
@@ -105,39 +95,14 @@ void setup() {
 
   Serial.begin(9600);
   
-  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-  if (!lcd.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { // Address 0x3D for 128x64
-    //Serial.println(F("SSD1306 allocation failed"));
-    for (;;); // Don't proceed, loop forever
-  }
+  display.setup();  
+  // Print copyright on display
+  display.set(MENU_HEADER, COPYRIGHT_TEXTS, sizeof(COPYRIGHT_TEXTS));
 
-  // Show initial display buffer contents on the screen --
-  // the library initializes this with an Adafruit splash screen.
-  lcd.display();
-  delay(100);
-
-  // Clear the buffer
-  lcd.clearDisplay();
-  lcd.setTextSize(2);
-  lcd.setTextColor(SSD1306_WHITE);
-  lcd.setCursor(0, 0);
-  lcd.println(F("LIGHTY"));
-  lcd.setTextSize(1);
-  lcd.println(F("(c) Dirk Essl 2020"));
-  lcd.println(F("V0.9.20200314"));
-  lcd.println(F(" "));
-  lcd.println(F("..Initializing.."));
-  lcd.println("Please wait");
-  lcd.display();
   delay(1000);
 
-  pinMode(AuxButton, INPUT_PULLUP);
-  digitalWrite(AuxButton, INPUT_PULLUP);
-  pinMode(AuxButtonGND, INPUT_PULLUP);
-  digitalWrite(AuxButtonGND, INPUT_PULLUP);
-
   setupLEDs();
-  setupSDcard();
+  filehandler.setup();
   ClearStrip(0);
 
   state_machine_setup();
@@ -164,7 +129,7 @@ void loop_origin() {
       lcd.println(F("LIGHTY"));
       lcd.setTextSize(1);
       lcd.println(F("1:File Select "));
-      lcd.println(m_CurrentFilename);
+      lcd.println(filehandler.getFilename());
       lcd.display();
       break;
     case 2:
@@ -227,7 +192,7 @@ void loop_origin() {
   int keypress = keypad.read();
   delay(50);
 
-  if ((keypress == 4) || (digitalRead(AuxButton) == LOW)) {   // The select key was pressed
+  if (keypress == 4) {   // The select key was pressed
 
     lcd.clearDisplay();
     lcd.setTextSize(2);
@@ -236,17 +201,17 @@ void loop_origin() {
     lcd.println(F(" "));
     lcd.setTextSize(1);
     lcd.println(F("Now Playing"));
-    lcd.println(m_CurrentFilename);
+    lcd.println(filehandler.getFilename());
     lcd.display();
     delay(initDelay);
     if (repeatTimes > 1) {
       for (int x = repeatTimes; x > 0; x--) {
-        SendFile(m_CurrentFilename);
+        filehandler.sendFile(filehandler.getFilename());
         delay(repeatDelay);
       }
     }
     else {
-      SendFile(m_CurrentFilename);
+      filehandler.sendFile(filehandler.getFilename());
     }
     ClearStrip(0);
   }
@@ -254,12 +219,7 @@ void loop_origin() {
     switch (menuItem) {
       case 1:                             // Select the Next File
         //BackLightOn();
-        if (m_FileIndex < m_NumberOfFiles - 1) {
-          m_FileIndex++;
-        }
-        else {
-          m_FileIndex = 0;                // On the last file so wrap round to the first file
-        }
+        filehandler.selectNextFile();
         DisplayCurrentFilename();
         break;
       case 2:                             // Adjust Brightness
@@ -286,12 +246,7 @@ void loop_origin() {
     switch (menuItem) {                   // Select the Previous File
       case 1:
         //BackLightOn();
-        if (m_FileIndex > 0) {
-          m_FileIndex--;
-        }
-        else {
-          m_FileIndex = m_NumberOfFiles - 1;   // On the last file so wrap round to the first file
-        }
+        filehandler.selectPreviousFile();
         DisplayCurrentFilename();
         delay(500);
         break;
@@ -354,85 +309,11 @@ void setupLEDs() {
   strip.show();
 }
 
-void setupSDcard() {
-  pinMode(SDssPin, OUTPUT);
-
-  while (!SD.begin(SDssPin)) {
-    lcd.println("SD init failed! ");
-    lcd.display();
-    delay(2000);
-    lcd.clearDisplay();
-    delay(500);
-  }
-  
-  //lcd.clearDisplay();
-  lcd.print("SD init done.   ");
-  delay(1000);
-  root = SD.open("/");
-  lcd.clearDisplay();
-  lcd.print("Scanning files  ");
-  delay(500);
-  GetFileNamesFromSD(root);
-  isort(m_FileNames, m_NumberOfFiles);
-  m_CurrentFilename = m_FileNames[0];
-  DisplayCurrentFilename();
-}
-
-void SendFile(String Filename) {
-  char temp[14];
-  Filename.toCharArray(temp, 14);
-  dataFile = SD.open(temp);
-
-  // if the file is available send it to the LED's
-  if (dataFile) {
-    ReadTheFile();
-    dataFile.close();
-  }
-  else {
-    lcd.clearDisplay();
-    lcd.print("  Error reading ");
-    lcd.setCursor(4, 1);
-    lcd.print("file");
-    delay(1000);
-    lcd.clearDisplay();
-    setupSDcard();
-    return;
-  }
-}
-
 void DisplayCurrentFilename() {
-  m_CurrentFilename = m_FileNames[m_FileIndex];
   lcd.setCursor(0, 1);
   lcd.print("                ");
   lcd.setCursor(0, 1);
-  lcd.print(m_CurrentFilename);
-}
-
-void GetFileNamesFromSD(File dir) {
-  int fileCount = 0;
-  String CurrentFilename = "";
-  while (1) {
-    File entry =  dir.openNextFile();
-    if (! entry) {
-      // no more files
-      m_NumberOfFiles = fileCount;
-      entry.close();
-      break;
-    }
-    else {
-      if (entry.isDirectory()) {
-        //GetNextFileName(root);
-      }
-      else {
-        CurrentFilename = entry.name();
-        if (CurrentFilename.endsWith(".bmp") || CurrentFilename.endsWith(".BMP") ) { //find files with our extension only
-          m_FileNames[fileCount] = entry.name();
-          fileCount++;
-        }
-      }
-    }
-    entry.close();
-  }
+  lcd.print(filehandler.getFilename());
 }
 
 void latchanddelay(int dur) {
@@ -446,138 +327,4 @@ void ClearStrip(int duration) {
     strip.setPixelColor(x, 0);
   }
   strip.show();
-}
-
-uint32_t readLong() {
-  uint32_t retValue;
-  byte incomingbyte;
-
-  incomingbyte = readByte();
-  retValue = (uint32_t)((byte)incomingbyte);
-
-  incomingbyte = readByte();
-  retValue += (uint32_t)((byte)incomingbyte) << 8;
-
-  incomingbyte = readByte();
-  retValue += (uint32_t)((byte)incomingbyte) << 16;
-
-  incomingbyte = readByte();
-  retValue += (uint32_t)((byte)incomingbyte) << 24;
-
-  return retValue;
-}
-
-uint16_t readInt() {
-  byte incomingbyte;
-  uint16_t retValue;
-  incomingbyte = readByte();
-  retValue += (uint16_t)((byte)incomingbyte);
-  incomingbyte = readByte();
-  retValue += (uint16_t)((byte)incomingbyte) << 8;
-  return retValue;
-}
-
-int readByte() {
-  int retbyte = -1;
-  while (retbyte < 0) retbyte = dataFile.read();
-  return retbyte;
-}
-
-void getRGBwithGamma() {
-  g = gamma(readByte()) / (101 - brightness);
-  b = gamma(readByte()) / (101 - brightness);
-  r = gamma(readByte()) / (101 - brightness);
-}
-
-void ReadTheFile() {
-#define MYBMP_BF_TYPE           0x4D42
-#define MYBMP_BF_OFF_BITS       54
-#define MYBMP_BI_SIZE           40
-#define MYBMP_BI_RGB            0L
-#define MYBMP_BI_RLE8           1L
-#define MYBMP_BI_RLE4           2L
-#define MYBMP_BI_BITFIELDS      3L
-
-  uint16_t bmpType = readInt();
-  uint32_t bmpSize = readLong();
-  uint16_t bmpReserved1 = readInt();
-  uint16_t bmpReserved2 = readInt();
-  uint32_t bmpOffBits = readLong();
-  bmpOffBits = 54;
-
-  /* Check file header */
-  if (bmpType != MYBMP_BF_TYPE || bmpOffBits != MYBMP_BF_OFF_BITS) {
-    lcd.setCursor(0, 0);
-    lcd.print("not a bitmap");
-    delay(1000);
-    return;
-  }
-
-  /* Read info header */
-  uint32_t imgSize = readLong();
-  uint32_t imgWidth = readLong();
-  uint32_t imgHeight = readLong();
-  uint16_t imgPlanes = readInt();
-  uint16_t imgBitCount = readInt();
-  uint32_t imgCompression = readLong();
-  uint32_t imgSizeImage = readLong();
-  uint32_t imgXPelsPerMeter = readLong();
-  uint32_t imgYPelsPerMeter = readLong();
-  uint32_t imgClrUsed = readLong();
-  uint32_t imgClrImportant = readLong();
-
-  /* Check info header */
-  if ( imgSize != MYBMP_BI_SIZE || imgWidth <= 0 ||
-       imgHeight <= 0 || imgPlanes != 1 ||
-       imgBitCount != 24 || imgCompression != MYBMP_BI_RGB ||
-       imgSizeImage == 0 )
-  {
-    lcd.setCursor(0, 0);
-    lcd.print("Unsupported");
-    lcd.setCursor(0, 1);
-    lcd.print("Bitmap Use 24bpp");
-    delay(1000);
-    return;
-  }
-
-  int displayWidth = imgWidth;
-  if (imgWidth > STRIP_LENGTH) {
-    displayWidth = STRIP_LENGTH;           //only display the number of led's we have
-  }
-
-  /* compute the line length */
-  uint32_t lineLength = imgWidth * 3;
-  if ((lineLength % 4) != 0)
-    lineLength = (lineLength / 4 + 1) * 4;
-
-  // Note:
-  // The x,r,b,g sequence below might need to be changed if your strip is displaying
-  // incorrect colors.  Some strips use an x,r,b,g sequence and some use x,r,g,b
-  // Change the order if needed to make the colors correct.
-
-  for (int y = imgHeight; y > 0; y--) {
-    int bufpos = 0;
-    for (int x = 0; x < displayWidth; x++) {
-      uint32_t offset = (MYBMP_BF_OFF_BITS + (((y - 1) * lineLength) + (x * 3))) ;
-      dataFile.seek(offset);
-
-      getRGBwithGamma();
-
-      strip.setPixelColor(x, r, b, g);
-
-    }
-    latchanddelay(frameDelay);
-  }
-}
-
-// Sort the filenames in alphabetical order
-void isort(String * filenames, int n) {
-  for (int i = 1; i < n; ++i) {
-    String j = filenames[i];
-    int k;
-    for (k = i - 1; (k >= 0) && (j < filenames[k]); k--) {
-      filenames[k + 1] = filenames[k];
-    }
-    filenames[k + 1] = j;
-  }
 }
