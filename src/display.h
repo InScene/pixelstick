@@ -29,6 +29,8 @@ class Display
     Display(Adafruit_SSD1306& lcd);
     ~Display();
 
+    void setup();
+    void set(const String& header, const String texts[], uint8_t sizeTexts);
     void set(const String& header, const String& text, const String& text2, const uint16_t value);
     void set(const String& header, const String& text, const String& text2, const unsigned long value);
     void set(const String& header, const String& text, const String& text2);
