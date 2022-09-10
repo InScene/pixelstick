@@ -125,9 +125,9 @@ void FileHandler::read_the_file()
   #define MYBMP_BI_BITFIELDS      3L
 
   uint16_t bmpType = readInt();
-  uint32_t bmpSize = readLong();
-  uint16_t bmpReserved1 = readInt();
-  uint16_t bmpReserved2 = readInt();
+  uint32_t bmpSize = readLong();       // Do not remove. The data must be read to comply with the sequence
+  uint16_t bmpReserved1 = readInt();   // Do not remove. The data must be read to comply with the sequence
+  uint16_t bmpReserved2 = readInt();   // Do not remove. The data must be read to comply with the sequence
   uint32_t bmpOffBits = readLong();
   bmpOffBits = 54;
 
@@ -148,10 +148,10 @@ void FileHandler::read_the_file()
   uint16_t imgBitCount = readInt();
   uint32_t imgCompression = readLong();
   uint32_t imgSizeImage = readLong();
-  uint32_t imgXPelsPerMeter = readLong();
-  uint32_t imgYPelsPerMeter = readLong();
-  uint32_t imgClrUsed = readLong();
-  uint32_t imgClrImportant = readLong();
+  uint32_t imgXPelsPerMeter = readLong();  // Do not remove. The data must be read to comply with the sequence
+  uint32_t imgYPelsPerMeter = readLong();  // Do not remove. The data must be read to comply with the sequence
+  uint32_t imgClrUsed = readLong();        // Do not remove. The data must be read to comply with the sequence
+  uint32_t imgClrImportant = readLong();   // Do not remove. The data must be read to comply with the sequence
 
   /* Check info header */
   if ( imgSize != MYBMP_BI_SIZE || imgWidth <= 0 ||
@@ -179,7 +179,6 @@ void FileHandler::read_the_file()
     lineLength = (lineLength / 4 + 1) * 4;
 
   for (int y = imgHeight; y > 0; y--) {
-    int bufpos = 0;
     for (int x = 0; x < displayWidth; x++) {
       uint32_t offset = (MYBMP_BF_OFF_BITS + (((y - 1) * lineLength) + (x * 3))) ;
       dataFile.seek(offset);
@@ -240,8 +239,8 @@ uint32_t FileHandler::readLong() {
 }
 
 uint16_t FileHandler::readInt() {
-  byte incomingbyte;
-  uint16_t retValue;
+  byte incomingbyte = 0;
+  uint16_t retValue = 0;
   incomingbyte = readByte();
   retValue += (uint16_t)((byte)incomingbyte);
   incomingbyte = readByte();
