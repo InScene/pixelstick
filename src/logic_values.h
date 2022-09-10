@@ -6,8 +6,6 @@
 
 #include <Arduino.h>
 
-#define STRIP_LENGTH 144                  // Set the number of LEDs the LED Strip
-
 class LogicValues 
 {
   public:
@@ -29,6 +27,7 @@ class LogicValues
     void increaseRepeatTimes();
     void decreaseRepeatTimes();
     uint8_t getBrightness() const;
+    void setBrightness(uint8_t value);
     void increaseBrightness();
     void decreaseBrightness();
 

@@ -6,6 +6,7 @@
 #define ULONG_MAX 0xFFFFFFFF
 #define OneSecInMs 1000
 #define OneHundredMs 100
+#define BRIGHTNESS_MAX 100
 
 LogicValues::LogicValues() :
   frameDelay(15),
@@ -108,9 +109,15 @@ uint8_t LogicValues::getBrightness() const
   return brightness;
 }
 
+void LogicValues::setBrightness(uint8_t value)
+{
+  if(value <= BRIGHTNESS_MAX)
+    brightness = value;
+}
+
 void LogicValues::increaseBrightness()
 {
-  if(brightness <= 100)
+  if(brightness <= BRIGHTNESS_MAX)
     brightness++;
 }
 
