@@ -22,7 +22,6 @@ class StripHandler
     void clear();
 
   private:
-    // Declaring the two LED Strips and pin assignments to each
     Adafruit_NeoPixel strip;
 
 };
