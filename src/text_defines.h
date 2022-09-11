@@ -9,7 +9,7 @@
 #define LINES_COPYRIGHT 5
 static String COPYRIGHT_TEXTS[LINES_COPYRIGHT] = {
   "(c) Christian Mertens 2022",
-  "V1.1",
+  "V1.2",
   " ",
   "..Initializing..",
   "   Please wait"
