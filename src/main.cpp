@@ -32,6 +32,7 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <EEPROM.h>
+#include <SoftwareReset.hpp>
 #include "global.h"
 #include "state_machine_logic.h"
 
@@ -95,8 +96,10 @@ void setup() {
   stripHandler.setup();
   
   if(!filehandler.setup()) {
+    // On error display error msg and reset arduino
     display.set(MENU_HEADER, ERROR_HEADER, "SD init failed! ");
     delay(2000);
+    softwareReset::standard();
   } else {
     display.set(MENU_HEADER, "SD init done.   ");
     delay(1000);
