@@ -108,8 +108,8 @@ void LogicValues::increaseRepeatDelay()
 
 void LogicValues::decreaseRepeatDelay()
 {
-  if(initDelay >= OneHundredMs)
-    initDelay -= OneHundredMs;
+  if(repeatDelay >= OneHundredMs)
+    repeatDelay -= OneHundredMs;
 }
 
 uint16_t LogicValues::getRepeatTimes() const
