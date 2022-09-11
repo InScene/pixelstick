@@ -2,8 +2,7 @@
   Copyright Christian Mertens 2022
 */
 #include "file_handler.h"
-// TODO: remove global include. It is only for lcd and strip needed
-#include "global.h"
+#include <Arduino.h>
 
 PROGMEM const unsigned char gammaTable[]  = {
   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -24,11 +23,10 @@ PROGMEM const unsigned char gammaTable[]  = {
   109, 110, 111, 113, 114, 115, 116, 117, 118, 120, 121, 122, 123, 125, 126, 127
 };
 
-FileHandler::FileHandler() :
-  currentfilename(""),
+FileHandler::FileHandler(StripHandler& strip) :
+  stripHandler(strip),
   fileIndex(0),
-  nbOfFiles(0),
-  brightness(0)
+  nbOfFiles(0)
 {
   
 }
@@ -38,60 +36,45 @@ bool FileHandler::setup()
   pinMode(SDssPin, OUTPUT);
 
   while (!SD.begin(SDssPin)) {
-    // TODO: outsource display functions
-    lcd.println("SD init failed! ");
-    lcd.display();
-    delay(2000);
-    lcd.clearDisplay();
-    delay(500);
+    // SD init failed    
     return false;
   }
   
-  // TODO: outsource display functions
-  lcd.print("SD init done.   ");
-  delay(1000);
+  return  true;
+}
+
+void FileHandler::scanForFiles()
+{
   root = SD.open("/");
-  // TODO: outsource display functions
-  lcd.clearDisplay();
-  lcd.print("Scanning files  ");
-  delay(500);
   getFileNamesFromSD(root);
   isort(fileNames, nbOfFiles);
-  currentfilename = fileNames[0];
-  // DisplayCurrentFilename();
-
-  return  true;
 }
 
 String FileHandler::getFilename() const
 {
-  return currentfilename;
+  return fileNames[fileIndex];
 }
 
-bool FileHandler::sendFile(String Filename)
+FileHandler::ErrorCode FileHandler::sendFile(const String& Filename, 
+                                             const uint8_t brightness,
+                                             const unsigned long frameDelay)
 {
+  ErrorCode error = NO_ERROR;
   char temp[14];
   Filename.toCharArray(temp, 14);
   dataFile = SD.open(temp);
 
   // if the file is available send it to the LED's
   if (dataFile) {
-    read_the_file();
+    error = read_the_file(brightness, frameDelay);
     dataFile.close();
-    return true;
   }
   else {
-    // TODO: outsource display functions
-    lcd.clearDisplay();
-    lcd.print("  Error reading ");
-    lcd.setCursor(4, 1);
-    lcd.print("file");
-    delay(1000);
-    lcd.clearDisplay();
+    error = FILE_READ_ERROR;
     setup();
   }
 
-  return false;
+  return error;
 }
 
 void FileHandler::selectNextFile()
@@ -114,7 +97,8 @@ void FileHandler::selectPreviousFile()
   }
 }
 
-void FileHandler::read_the_file()
+FileHandler::ErrorCode FileHandler::read_the_file(const uint8_t brightness, 
+                                                  const unsigned long frameDelay)
 {
   #define MYBMP_BF_TYPE           0x4D42
   #define MYBMP_BF_OFF_BITS       54
@@ -124,6 +108,8 @@ void FileHandler::read_the_file()
   #define MYBMP_BI_RLE4           2L
   #define MYBMP_BI_BITFIELDS      3L
 
+  ErrorCode error = NO_ERROR;
+
   uint16_t bmpType = readInt();
   uint32_t bmpSize = readLong();       // Do not remove. The data must be read to comply with the sequence
   uint16_t bmpReserved1 = readInt();   // Do not remove. The data must be read to comply with the sequence
@@ -131,13 +117,15 @@ void FileHandler::read_the_file()
   uint32_t bmpOffBits = readLong();
   bmpOffBits = 54;
 
+  // Suppress compiler warning for unused variables
+  (void)bmpSize;
+  (void)bmpReserved1;
+  (void)bmpReserved2;
+
   /* Check file header */
   if (bmpType != MYBMP_BF_TYPE || bmpOffBits != MYBMP_BF_OFF_BITS) {
-    // TODO: outsource display functions
-    lcd.setCursor(0, 0);
-    lcd.print("not a bitmap");
-    delay(1000);
-    return;
+    error = FILE_NOT_A_BITMAP;
+    return error;
   }
 
   /* Read info header */
@@ -153,19 +141,20 @@ void FileHandler::read_the_file()
   uint32_t imgClrUsed = readLong();        // Do not remove. The data must be read to comply with the sequence
   uint32_t imgClrImportant = readLong();   // Do not remove. The data must be read to comply with the sequence
 
+  // Suppress compiler warning for unused variables
+  (void)imgXPelsPerMeter;
+  (void)imgYPelsPerMeter;
+  (void)imgClrUsed;
+  (void)imgClrImportant;
+
   /* Check info header */
   if ( imgSize != MYBMP_BI_SIZE || imgWidth <= 0 ||
        imgHeight <= 0 || imgPlanes != 1 ||
        imgBitCount != 24 || imgCompression != MYBMP_BI_RGB ||
        imgSizeImage == 0 )
   {
-    // TODO: outsource display functions
-    lcd.setCursor(0, 0);
-    lcd.print("Unsupported");
-    lcd.setCursor(0, 1);
-    lcd.print("Bitmap Use 24bpp");
-    delay(1000);
-    return;
+    error = UNSUPPORTED_BITMAP;
+    return error;
   }
 
   int displayWidth = imgWidth;
@@ -183,14 +172,16 @@ void FileHandler::read_the_file()
       uint32_t offset = (MYBMP_BF_OFF_BITS + (((y - 1) * lineLength) + (x * 3))) ;
       dataFile.seek(offset);
 
-      rgbValues rgbVal = getRGBwithGamma();
+      rgbValues rgbVal = getRGBwithGamma(brightness);
 
     // TODO: Outsourde strip value call
       stripHandler.setPixelColor(x, rgbVal.r, rgbVal.g, rgbVal.b);
     }
     // TODO: outsource latchanddelay call
-    stripHandler.latchanddelay(logicValues.getFrameDelay());
+    stripHandler.latchanddelay(frameDelay);
   }
+
+  return error;
 }
 
 void FileHandler::getFileNamesFromSD(File dir) {
@@ -267,7 +258,7 @@ void FileHandler::isort(String * filenames, int n) {
 }
 
 // TODO: Cancel dependence on brightness
-FileHandler::rgbValues FileHandler::getRGBwithGamma() {
+FileHandler::rgbValues FileHandler::getRGBwithGamma(const uint8_t brightness) {
   rgbValues values;
   values.g = gamma(readByte()) / (101 - brightness);
   values.b = gamma(readByte()) / (101 - brightness);
