@@ -72,7 +72,8 @@ void s1_2_brightness(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_2_brightness");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_BRIGHTNESS, (uint16_t)logicValues.getBrightness());
+    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_BRIGHTNESS,
+                (uint16_t)logicValues.getBrightness(), MENU_FILE_BRIGHTNESS_VALUE);
   }
 }
 
@@ -89,7 +90,8 @@ void s1_3_init_delay(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_3_init_delay");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_INIT_DELAY, logicValues.getInitDelay());
+    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_INIT_DELAY, 
+                logicValues.getInitDelay(), MENU_FILE_INIT_DELAY_VALUE);
   }
 }
 
@@ -106,7 +108,8 @@ void s1_4_frame_delay(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_4_frame_delay");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_FRAME_DELAY, logicValues.getFrameDelay());
+    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_FRAME_DELAY, 
+                logicValues.getFrameDelay(), MENU_FILE_FRAME_DELAY_VALUE);
   }
 }
 
@@ -123,7 +126,8 @@ void s1_5_repeat_times(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_5_repeat_times");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_REPEAT_TIMES, logicValues.getRepeatTimes());
+    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_REPEAT_TIMES,
+                logicValues.getRepeatTimes());
   }
 }
 
@@ -140,7 +144,8 @@ void s1_6_repeat_delay(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_6_repeat_delay");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_REPEAT_DELAY, logicValues.getRepeatDelay());
+    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_REPEAT_DELAY, 
+                logicValues.getRepeatDelay(), MENU_FILE_REPEAT_DELAY_VALUE);
   }
 }
 
