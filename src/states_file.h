@@ -12,20 +12,59 @@ void s1_1_file_select()
     #ifdef STATE_DEBUG
       Serial.println("State s1_1_file_select");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_SELECT);
+    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_SELECT, filehandler.getFilename());
   }
 }
 
 void s1_1_1_now_playing() {
+  FileHandler::ErrorCode fileError;
+  const String filename = filehandler.getFilename();
+  const uint8_t brightness = logicValues.getBrightness();
+  const unsigned long frameDelay = logicValues.getFrameDelay();
+
+  display.set(MENU_HEADER, MENU_HEADER_NOW_PLAYING, filename);
+  delay(logicValues.getInitDelay());
+  uint16_t repeatTimes = logicValues.getRepeatTimes();
+  if (repeatTimes > 1) {
+    for (int x = repeatTimes; x > 0; x--) {
+      fileError = filehandler.sendFile(filename, brightness, frameDelay);
+      if(fileError != FileHandler::NO_ERROR) {
+        break;
+      }
+      delay(logicValues.getRepeatDelay());
+    }
+  }
+  else {
+    fileError = filehandler.sendFile(filename, brightness, frameDelay);
+  }
+  stripHandler.clear();
+
+  switch (fileError)
+  {
+  case FileHandler::FILE_READ_ERROR:
+    display.set(MENU_HEADER, ERROR_HEADER, "Error reading file");
+    delay(1000);
+    break;
+  case FileHandler::FILE_NOT_A_BITMAP:
+    display.set(MENU_HEADER, ERROR_HEADER, "not a bitmap");
+    delay(1000);
+    break;
+  case FileHandler::UNSUPPORTED_BITMAP:
+    display.set(MENU_HEADER, ERROR_HEADER, "Unsupported", "Bitmap Use 24bpp");
+    delay(1000);
+    break;
   
+  default:
+    break;
+  }
 }
 
 void s1_1_2_next_file() {
-
+  filehandler.selectNextFile();
 }
 
 void s1_1_3_prev_file() {
-
+  filehandler.selectPreviousFile();
 }
 
 void s1_2_brightness(){

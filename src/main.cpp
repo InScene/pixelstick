@@ -28,28 +28,22 @@
 */
 
 // Library initialization
-#include "main.h"
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <EEPROM.h>
+#include "global.h"
+#include "state_machine_logic.h"
 
-FileHandler filehandler = FileHandler();
-
-
-String COPYRIGHT_TEXTS[5] = {
+#define LINES_COPYRIGHT 5
+String COPYRIGHT_TEXTS[LINES_COPYRIGHT] = {
   "(c) Christian Mertens 2022",
   "V1.1",
   " ",
   "..Initializing..",
-  "Please wait"
+  "   Please wait"
 };
 
-
-// Intial Variable declarations and assignments (Make changes to these if you want to change defaults)
-
-int frameDelay = 15;                      // default for the frame delay
-int menuItem = 1;                         // Variable for current main menu selection
-int initDelay = 0;                        // Variable for delay between button press and start of light sequence
-int repeatDelay = 0;                      // Variable for delay between repeats
-int repeatTimes = 1;                      // Variable to keep track of number of repeats
-int brightness = 50;                      // Variable and default for the Brightness of the strip
 
 // EEPROM setup. saves all values in eeprom. the mega has 4kb of eeprom storage
 // the current address in the EEPROM (i.e. which byte we're going to write to next)
@@ -66,8 +60,6 @@ int addrbrightness = 70;                       // Variable and default for the B
 
 // Setup loop to get everything ready.  This is only run once at power on or reset
 void setup() {
-
-  keypad.setup();
 
   // check if values in eeprom make sense, otherwise set default value
   if (EEPROM.read(addrbrightness) >= 1 && EEPROM.read(addrbrightness) <= 100) {
@@ -91,15 +83,29 @@ void setup() {
   */
 
   Serial.begin(9600);
-  
-  display.setup();  
-  // Print copyright on display
-  display.set(MENU_HEADER, COPYRIGHT_TEXTS, sizeof(COPYRIGHT_TEXTS));
 
-  delay(1000);
+  display.setup();
+  Serial.println(LINES_COPYRIGHT);
+  // Print copyright on display
+  display.set(MENU_HEADER, COPYRIGHT_TEXTS, LINES_COPYRIGHT);
+  delay(3000);
+  
+  keypad.setup();
 
   stripHandler.setup();
-  filehandler.setup();
+  
+  if(!filehandler.setup()) {
+    display.set(MENU_HEADER, ERROR_HEADER, "SD init failed! ");
+    delay(2000);
+  } else {
+    display.set(MENU_HEADER, "SD init done.   ");
+    delay(1000);
+  }
+
+  display.set(MENU_HEADER, "Scanning files  ");
+  delay(500);
+  filehandler.scanForFiles();
+
   stripHandler.clear();
 
   state_machine_setup();
@@ -110,200 +116,5 @@ void setup() {
 void loop() {
   keypad.read();
   machine.run();
-  delay(250);
-}
-
-// The Main Loop for the program starts here...
-// This will loop endlessly looking for a key press to perform a function
-void loop_origin() {
-
-  switch (menuItem) {
-    case 1:
-      lcd.clearDisplay();
-      lcd.setTextSize(2);
-      lcd.setTextColor(SSD1306_WHITE);
-      lcd.setCursor(0, 0);
-      lcd.println(F("LIGHTY"));
-      lcd.setTextSize(1);
-      lcd.println(F("1:File Select "));
-      lcd.println(filehandler.getFilename());
-      lcd.display();
-      break;
-    case 2:
-      lcd.clearDisplay();
-      lcd.setTextSize(2);
-      lcd.setTextColor(SSD1306_WHITE);
-      lcd.setCursor(0, 0);
-      lcd.println(F("LIGHTY"));
-      lcd.setTextSize(1);
-      lcd.println(F("2:Brightness "));
-      lcd.println(brightness);
-      lcd.display();
-      break;
-    case 3:
-      lcd.clearDisplay();
-      lcd.setTextSize(2);
-      lcd.setTextColor(SSD1306_WHITE);
-      lcd.setCursor(0, 0);
-      lcd.println(F("LIGHTY"));
-      lcd.setTextSize(1);
-      lcd.println(F("3:Init Delay "));
-      lcd.println(initDelay);
-      lcd.display();
-      break;
-    case 4:
-      lcd.clearDisplay();
-      lcd.setTextSize(2);
-      lcd.setTextColor(SSD1306_WHITE);
-      lcd.setCursor(0, 0);
-      lcd.println(F("LIGHTY"));
-      lcd.setTextSize(1);
-      lcd.println(F("4:Frame Delay"));
-      lcd.println(frameDelay);
-      lcd.display();
-      break;
-    case 5:
-      lcd.clearDisplay();
-      lcd.setTextSize(2);
-      lcd.setTextColor(SSD1306_WHITE);
-      lcd.setCursor(0, 0);
-      lcd.println(F("LIGHTY"));
-      lcd.setTextSize(1);
-      lcd.println(F("5:Repeat Times"));
-      lcd.println(repeatTimes);
-      lcd.display();
-      break;
-    case 6:
-      lcd.clearDisplay();
-      lcd.setTextSize(2);
-      lcd.setTextColor(SSD1306_WHITE);
-      lcd.setCursor(0, 0);
-      lcd.println(F("LIGHTY"));
-      lcd.setTextSize(1);
-      lcd.println(F("6:Repeat Delay"));
-      lcd.println(repeatDelay);
-      lcd.display();
-      break;
-  }
-
-  int keypress = keypad.read();
-  delay(50);
-
-  if (keypress == 4) {   // The select key was pressed
-
-    lcd.clearDisplay();
-    lcd.setTextSize(2);
-    lcd.setTextColor(SSD1306_WHITE);
-    lcd.setCursor(0, 0);
-    lcd.println(F(" "));
-    lcd.setTextSize(1);
-    lcd.println(F("Now Playing"));
-    lcd.println(filehandler.getFilename());
-    lcd.display();
-    delay(initDelay);
-    if (repeatTimes > 1) {
-      for (int x = repeatTimes; x > 0; x--) {
-        filehandler.sendFile(filehandler.getFilename());
-        delay(repeatDelay);
-      }
-    }
-    else {
-      filehandler.sendFile(filehandler.getFilename());
-    }
-    stripHandler.clear();
-  }
-  if (keypress == 0) {                    // The Right Key was Pressed
-    switch (menuItem) {
-      case 1:                             // Select the Next File
-        //BackLightOn();
-        filehandler.selectNextFile();
-        DisplayCurrentFilename();
-        break;
-      case 2:                             // Adjust Brightness
-        if (brightness < 100) {
-          brightness += 1;
-        }
-        break;
-      case 3:                             // Adjust Initial Delay + 1 second
-        initDelay += 1000;
-        break;
-      case 4:                             // Adjust Frame Delay + 1 milliseconds
-        frameDelay += 1;
-        break;
-      case 5:                             // Adjust Repeat Times + 1
-        repeatTimes += 1;
-        break;
-      case 6:                             // Adjust Repeat Delay + 100 milliseconds
-        repeatDelay += 100;
-        break;
-    }
-  }
-
-  if (keypress == 3) {                    // The Left Key was Pressed
-    switch (menuItem) {                   // Select the Previous File
-      case 1:
-        //BackLightOn();
-        filehandler.selectPreviousFile();
-        DisplayCurrentFilename();
-        delay(500);
-        break;
-      case 2:                             // Adjust Brightness
-        //BackLightOn();
-        if (brightness > 1) {
-          brightness -= 1;
-          EEPROM.put(addrbrightness, brightness);
-        }
-        break;
-      case 3:                             // Adjust Initial Delay - 1 second
-        if (initDelay > 0) {
-          initDelay -= 1000;
-          EEPROM.put(addrinitDelay, initDelay);
-        }
-        break;
-      case 4:                             // Adjust Frame Delay - 1 millisecond
-        if (frameDelay > 0) {
-          frameDelay -= 1;
-          EEPROM.put(addrframeDelay, frameDelay);
-        }
-        break;
-      case 5:                             // Adjust Repeat Times - 1
-        if (repeatTimes > 1) {
-          repeatTimes -= 1;
-          EEPROM.put(addrrepeatTimes, repeatTimes);
-        }
-        break;
-      case 6:                             // Adjust Repeat Delay - 100 milliseconds
-        if (repeatDelay > 0) {
-          repeatDelay -= 100;
-          EEPROM.put(addrrepeatDelay, repeatDelay);
-        }
-        break;
-    }
-  }
-
-  //if (digitalRead(uppin) == LOW) key = 1;
-  if (digitalRead(UPPIN) == LOW) {                 // The up key was pressed
-    delay(50);
-    if (menuItem == 1) {
-      menuItem = 6;
-    }
-    else {
-      menuItem -= 1;
-    }
-  }
-  if (( keypress == 2)) {                 // The down key was pressed
-    if (menuItem == 6) {
-      menuItem = 1;
-    }
-    else {
-      menuItem += 1;
-    }
-  }
-}
-
-void DisplayCurrentFilename() {
-  lcd.setCursor(0, 1);
-  lcd.print("                ");
-  lcd.setCursor(0, 1);
-  lcd.print(filehandler.getFilename());
+  delay(500);
 }

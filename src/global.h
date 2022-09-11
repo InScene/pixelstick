@@ -9,28 +9,15 @@
 #include "keypad.h"
 #include "logic_values.h"
 #include "strip_handler.h"
+#include "file_handler.h"
 
-/************** Display Section *************/
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-
-#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
-Adafruit_SSD1306 lcd(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-
-Display display = Display(lcd);
-
-/************** Keypad Section *************/
+Display display = Display();
 KeyPad keypad = KeyPad();
-
-/************** State Machine Section *************/
-#define STATE_DEBUG 1
-
-StateMachine machine = StateMachine();
-
-/************** Logic Values Section *************/
 LogicValues logicValues = LogicValues();
-
-/************** Strip Section *************/
 StripHandler stripHandler = StripHandler();
+FileHandler filehandler = FileHandler(stripHandler);
+
+//#define STATE_DEBUG 1
+StateMachine machine = StateMachine();
 
 #endif // __GLOBAL_H__
