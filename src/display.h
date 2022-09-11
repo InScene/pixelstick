@@ -7,6 +7,7 @@
 #include <Adafruit_SSD1306.h>
 
 #define MENU_HEADER F("LIGHTY")
+#define ERROR_HEADER F("ERROR")
 
 #define MENU_MAIN_HEADER F("Main Menu ")
 #define MENU_MAIN_FILE F("1:File ")
@@ -23,20 +24,22 @@
 #define MENU_HEADER_NOW_PLAYING F(" ")
 #define MENU_NOW_PLAYING F("Now Playing")
 
+#define DISPLAY_ARRAY_SIZE_MAX 5
 class Display
 {
   public:
-    Display(Adafruit_SSD1306& lcd);
+    Display();
     ~Display();
 
     void setup();
     void set(const String& header, const String texts[], uint8_t sizeTexts);
     void set(const String& header, const String& text, const String& text2, const uint16_t value);
     void set(const String& header, const String& text, const String& text2, const unsigned long value);
-    void set(const String& header, const String& text, const String& text2);
+    void set(const String& header, const String& text, const String text2 = "");
+    void set(const String& header, const String& text, const String& text2, const String& text3);
 
   private:
-    Adafruit_SSD1306& lcd;
+    Adafruit_SSD1306 lcd;
 };
 
 #endif // __DISPLAY_H__
