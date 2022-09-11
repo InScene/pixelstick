@@ -35,15 +35,6 @@
 #include "global.h"
 #include "state_machine_logic.h"
 
-#define LINES_COPYRIGHT 5
-String COPYRIGHT_TEXTS[LINES_COPYRIGHT] = {
-  "(c) Christian Mertens 2022",
-  "V1.1",
-  " ",
-  "..Initializing..",
-  "   Please wait"
-};
-
 // Setup loop to get everything ready.  This is only run once at power on or reset
 void setup() {
 
