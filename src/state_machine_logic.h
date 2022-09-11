@@ -28,7 +28,9 @@ State* s1_5_2 = machine.addState(&s1_5_2_repeat_times_dec);
 State* s1_6 = machine.addState(&s1_6_repeat_delay);
 State* s1_6_1 = machine.addState(&s1_6_1_repeat_delay_inc);
 State* s1_6_2 = machine.addState(&s1_6_2_repeat_delay_dec);
-State* s1_7 = machine.addState(&s1_7_main_menu);
+State* s1_7 = machine.addState(&s1_7_reset_values);
+State* s1_7_1 = machine.addState(&s1_7_1_reset_to_default);
+State* s1_8 = machine.addState(&s1_8_main_menu);
 
 void state_machine_setup() {
   /* Add transitions */
@@ -38,7 +40,7 @@ void state_machine_setup() {
   s1_1->addTransition(&transitionS1_1_to_S1_1_2, s1_1_2);
   s1_1->addTransition(&transitionS1_1_to_S1_1_3, s1_1_3);
   s1_1->addTransition(&transitionS1_1_to_S1_2, s1_2);
-  s1_1->addTransition(&transitionS1_1_to_S1_7, s1_7);
+  s1_1->addTransition(&transitionS1_1_to_S1_8, s1_8);
 
   s1_1_1->addTransition(&transitionS1_1_1_to_S1_1, s1_1);
 
@@ -91,9 +93,15 @@ void state_machine_setup() {
 
   s1_6_2->addTransition(&transitionS1_6_2_to_S1_6, s1_6);
 
-  s1_7->addTransition(&transitionS1_7_to_S1_1, s1_1);
+  s1_7->addTransition(&transitionS1_7_to_S1_8, s1_8);
   s1_7->addTransition(&transitionS1_7_to_S1_6, s1_6);
-  s1_7->addTransition(&transitionS1_7_to_S1, s1);
+  s1_7->addTransition(&transitionS1_7_to_S1_7_1, s1_7_1);
+
+  s1_7_1->addTransition(&transitionS1_7_1_to_S1_7, s1_7);
+
+  s1_8->addTransition(&transitionS1_8_to_S1_1, s1_1);
+  s1_8->addTransition(&transitionS1_8_to_S1_7, s1_7);
+  s1_8->addTransition(&transitionS1_8_to_S1, s1);
 }
 
 #endif // __STATE_MACHINE_LOGIC_H__

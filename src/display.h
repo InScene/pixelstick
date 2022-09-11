@@ -19,10 +19,13 @@
 #define MENU_FILE_FRAME_DELAY F("4:Frame Delay")
 #define MENU_FILE_REPEAT_TIMES F("5:Repeat Times")
 #define MENU_FILE_REPEAT_DELAY F("6:Repeat Delay")
-#define MENU_FILE_MAIN_MENU F("7:Main Menu")
+#define MENU_FILE_RESET_VALUES F("7:Reset Values")
+#define MENU_FILE_MAIN_MENU F("8:Main Menu")
 
 #define MENU_HEADER_NOW_PLAYING F(" ")
 #define MENU_NOW_PLAYING F("Now Playing")
+
+#define MENU_VALUE_RESETTED F("Values resetted")
 
 #define DISPLAY_ARRAY_SIZE_MAX 5
 class Display
