@@ -83,10 +83,10 @@ void setup() {
     }
   */
 
-  Serial.begin(9600);
+  //Serial.begin(9600);
 
   display.setup();
-  Serial.println(LINES_COPYRIGHT);
+  
   // Print copyright on display
   display.set(MENU_HEADER, COPYRIGHT_TEXTS, LINES_COPYRIGHT);
   delay(3000);
