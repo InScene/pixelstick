@@ -31,6 +31,10 @@ class LogicValues
     void increaseBrightness();
     void decreaseBrightness();
 
+    void storeValuesToEeprom();
+    void restoreValuesFromEeprom();
+    void resetValuesToDefault();
+
   private:
     unsigned long frameDelay;            // default for the frame delay
     unsigned long initDelay;             // Variable for delay between button press and start of light sequence
@@ -38,6 +42,11 @@ class LogicValues
     unsigned long repeatDelay;           // Variable for delay between repeats
     uint16_t repeatTimes;                // Variable to keep track of number of repeats
     uint8_t brightness;                  // Variable and default for the Brightness of the strip
+
+    uint16_t eepromReadUint16(uint8_t address);
+    void eepromWriteUint16(uint8_t address, unsigned long value);
+    unsigned long eepromReadULong(uint8_t address);
+    void eepromWriteULong(uint8_t address, unsigned long value);
 };
 
 #endif // __LOGIC_VALUES_H__
