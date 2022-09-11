@@ -31,7 +31,6 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
-#include <EEPROM.h>
 #include <SoftwareReset.hpp>
 #include "global.h"
 #include "state_machine_logic.h"
@@ -45,46 +44,13 @@ String COPYRIGHT_TEXTS[LINES_COPYRIGHT] = {
   "   Please wait"
 };
 
-
-// EEPROM setup. saves all values in eeprom. the mega has 4kb of eeprom storage
-// the current address in the EEPROM (i.e. which byte we're going to write to next)
-
-// set addresses for save
-int addrframeDelay = 0;                        // default for the frame delay
-int addrinitDelay = 20;                        // Variable for delay between button press and start of light sequence
-int addrrepeat = 30;                           // Variable to select auto repeat (until select button is pressed again)
-int addrrepeatDelay = 400;                     // Variable for delay between repeats
-int addrupdateMode = 50;                       // Variable to keep track of update Modes
-int addrrepeatTimes = 60;                      // Variable to keep track of number of repeats
-int addrbrightness = 70;                       // Variable and default for the Brightness of the strip
-
-
 // Setup loop to get everything ready.  This is only run once at power on or reset
 void setup() {
 
-  // check if values in eeprom make sense, otherwise set default value
-  if (EEPROM.read(addrbrightness) >= 1 && EEPROM.read(addrbrightness) <= 100) {
-    logicValues.setBrightness((uint8_t)EEPROM.read(addrbrightness));
-  } else {
-    logicValues.setBrightness(50);
-  }
+   //Serial.begin(9600);
 
-  /*
-    if (EEPROM.read(addrrepeatTimes) >= 1 && EEPROM.read(addrrepeatTimes) <= 100) {
-      repeatTimes = EEPROM.read(addrrepeatTimes);
-    } else {
-      repeatTimes = 1;
-    }
-
-    if (EEPROM.read(addrrepeatDelay) >= 0 && EEPROM.read(addrrepeatDelay) <= 10000) {
-      repeatDelay = EEPROM.read(addrrepeatDelay);
-    } else {
-      repeatDelay = 0;
-    }
-  */
-
-  //Serial.begin(9600);
-
+  logicValues.restoreValuesFromEeprom();
+  
   display.setup();
   
   // Print copyright on display
