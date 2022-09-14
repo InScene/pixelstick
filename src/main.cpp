@@ -40,7 +40,7 @@ void setup() {
 
    //Serial.begin(9600);
 
-  logicValues.restoreValuesFromEeprom();
+  logicValues.RestoreValuesFromEeprom();
   
   display.Setup();
   

@@ -19,19 +19,19 @@ void s1_1_file_select()
 void s1_1_1_now_playing() {
   FileHandler::ErrorCode fileError;
   const String filename = filehandler.GetFilename();
-  const uint8_t brightness = logicValues.getBrightness();
-  const unsigned long frameDelay = logicValues.getFrameDelay();
+  const uint8_t brightness = logicValues.GetBrightness();
+  const unsigned long frameDelay = logicValues.GetFrameDelay();
 
   display.Set(kMenuHeader, kMenuHeaderNowPlaying, filename);
-  delay(logicValues.getInitDelay());
-  uint16_t repeatTimes = logicValues.getRepeatTimes();
+  delay(logicValues.GetInitDelay());
+  uint16_t repeatTimes = logicValues.GetRepeatTimes();
   if (repeatTimes > 1) {
     for (int x = repeatTimes; x > 0; x--) {
       fileError = filehandler.SendFile(filename, brightness, frameDelay);
       if(fileError != FileHandler::kNoError) {
         break;
       }
-      delay(logicValues.getRepeatDelay());
+      delay(logicValues.GetRepeatDelay());
     }
   }
   else {
@@ -73,16 +73,16 @@ void s1_2_brightness(){
       Serial.println("State s1_2_brightness");
     #endif
     display.Set(kMenuHeader, kMenuFileHeader, kMenuFileBrightness,
-                (uint16_t)logicValues.getBrightness(), kMenuFileBrightnessValue);
+                (uint16_t)logicValues.GetBrightness(), kMenuFileBrightnessValue);
   }
 }
 
 void s1_2_1_brightness_inc(){
-  logicValues.increaseBrightness();
+  logicValues.IncreaseBrightness();
 }
 
 void s1_2_2_brightness_dec(){
-  logicValues.decreaseBrightness();
+  logicValues.DecreaseBrightness();
 }
 
 void s1_3_init_delay(){
@@ -91,16 +91,16 @@ void s1_3_init_delay(){
       Serial.println("State s1_3_init_delay");
     #endif
     display.Set(kMenuHeader, kMenuFileHeader, kMenuFileInitDelay, 
-                logicValues.getInitDelay(), kMenuFileInitDelayValue);
+                logicValues.GetInitDelay(), kMenuFileInitDelayValue);
   }
 }
 
 void s1_3_1_init_delay_inc(){
-  logicValues.increaseInitDelay1Sec();
+  logicValues.IncreaseInitDelay1Sec();
 }
 
 void s1_3_2_init_delay_dec(){
-  logicValues.decreaseInitDelay1Sec();
+  logicValues.DecreaseInitDelay1Sec();
 }
 
 void s1_4_frame_delay(){
@@ -109,16 +109,16 @@ void s1_4_frame_delay(){
       Serial.println("State s1_4_frame_delay");
     #endif
     display.Set(kMenuHeader, kMenuFileHeader, kMenuFileFrameDelay, 
-                logicValues.getFrameDelay(), kMenuFileFrameDelayValue);
+                logicValues.GetFrameDelay(), kMenuFileFrameDelayValue);
   }
 }
 
 void s1_4_1_frame_delay_inc(){
-  logicValues.increaseFrameDelay();
+  logicValues.IncreaseFrameDelay();
 }
 
 void s1_4_2_frame_delay_dec(){
-  logicValues.decreaseFrameDelay();
+  logicValues.DecreaseFrameDelay();
 }
 
 void s1_5_repeat_times(){
@@ -127,16 +127,16 @@ void s1_5_repeat_times(){
       Serial.println("State s1_5_repeat_times");
     #endif
     display.Set(kMenuHeader, kMenuFileHeader, kMenuFileRepeatTimes,
-                logicValues.getRepeatTimes());
+                logicValues.GetRepeatTimes());
   }
 }
 
 void s1_5_1_repeat_times_inc(){
-  logicValues.increaseRepeatTimes();
+  logicValues.IncreaseRepeatTimes();
 }
 
 void s1_5_2_repeat_times_dec(){
-  logicValues.decreaseRepeatTimes();
+  logicValues.DecreaseRepeatTimes();
 }
 
 void s1_6_repeat_delay(){
@@ -145,16 +145,16 @@ void s1_6_repeat_delay(){
       Serial.println("State s1_6_repeat_delay");
     #endif
     display.Set(kMenuHeader, kMenuFileHeader, kMenuFileRepeatDelay, 
-                logicValues.getRepeatDelay(), kMenuFileRepeatDelayValue);
+                logicValues.GetRepeatDelay(), kMenuFileRepeatDelayValue);
   }
 }
 
 void s1_6_1_repeat_delay_inc(){
-  logicValues.increaseRepeatDelay();
+  logicValues.IncreaseRepeatDelay();
 }
 
 void s1_6_2_repeat_delay_dec(){
-  logicValues.decreaseRepeatDelay();
+  logicValues.DecreaseRepeatDelay();
 }
 
 void s1_7_reset_values(){
@@ -167,7 +167,7 @@ void s1_7_reset_values(){
 }
 
 void s1_7_1_reset_to_default(){
-  logicValues.resetValuesToDefault();
+  logicValues.ResetValuesToDefault();
   display.Set(kMenuHeader, kMenuFileHeader, kMenuValueResetted);
   delay(3000);
 }
@@ -262,7 +262,7 @@ bool transitionS1_2_to_S1_2_2() {
 
 bool transitionS1_2_to_S1_1() {
   if(keypad.GetLastReadedKey() == KeyPad::kUp){
-    logicValues.storeValuesToEeprom();
+    logicValues.StoreValuesToEeprom();
     return true;
   }
 
@@ -271,7 +271,7 @@ bool transitionS1_2_to_S1_1() {
 
 bool transitionS1_2_to_S1_3() {
   if(keypad.GetLastReadedKey() == KeyPad::kDown){
-    logicValues.storeValuesToEeprom();
+    logicValues.StoreValuesToEeprom();
     return true;
   }
 
@@ -305,7 +305,7 @@ bool transitionS1_3_to_S1_3_2() {
 
 bool transitionS1_3_to_S1_2() {
   if(keypad.GetLastReadedKey() == KeyPad::kUp){
-    logicValues.storeValuesToEeprom();
+    logicValues.StoreValuesToEeprom();
     return true;
   }
 
@@ -314,7 +314,7 @@ bool transitionS1_3_to_S1_2() {
 
 bool transitionS1_3_to_S1_4() {
   if(keypad.GetLastReadedKey() == KeyPad::kDown){
-    logicValues.storeValuesToEeprom();
+    logicValues.StoreValuesToEeprom();
     return true;
   }
 
@@ -348,7 +348,7 @@ bool transitionS1_4_to_S1_4_2() {
 
 bool transitionS1_4_to_S1_3() {
   if(keypad.GetLastReadedKey() == KeyPad::kUp){
-    logicValues.storeValuesToEeprom();
+    logicValues.StoreValuesToEeprom();
     return true;
   }
 
@@ -357,7 +357,7 @@ bool transitionS1_4_to_S1_3() {
 
 bool transitionS1_4_to_S1_5() {
   if(keypad.GetLastReadedKey() == KeyPad::kDown){
-    logicValues.storeValuesToEeprom();
+    logicValues.StoreValuesToEeprom();
     return true;
   }
 
@@ -391,7 +391,7 @@ bool transitionS1_5_to_S1_5_2() {
 
 bool transitionS1_5_to_S1_4() {
   if(keypad.GetLastReadedKey() == KeyPad::kUp){
-    logicValues.storeValuesToEeprom();
+    logicValues.StoreValuesToEeprom();
     return true;
   }
 
@@ -400,7 +400,7 @@ bool transitionS1_5_to_S1_4() {
 
 bool transitionS1_5_to_S1_6() {
   if(keypad.GetLastReadedKey() == KeyPad::kDown){
-    logicValues.storeValuesToEeprom();
+    logicValues.StoreValuesToEeprom();
     return true;
   }
 
@@ -434,7 +434,7 @@ bool transitionS1_6_to_S1_6_2() {
 
 bool transitionS1_6_to_S1_5() {
   if(keypad.GetLastReadedKey() == KeyPad::kUp){
-    logicValues.storeValuesToEeprom();
+    logicValues.StoreValuesToEeprom();
     return true;
   }
 
@@ -443,7 +443,7 @@ bool transitionS1_6_to_S1_5() {
 
 bool transitionS1_6_to_S1_7() {
   if(keypad.GetLastReadedKey() == KeyPad::kDown){
-    logicValues.storeValuesToEeprom();
+    logicValues.StoreValuesToEeprom();
     return true;
   }
 
