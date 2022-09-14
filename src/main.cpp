@@ -45,7 +45,7 @@ void setup() {
   display.setup();
   
   // Print copyright on display
-  display.set(MENU_HEADER, COPYRIGHT_TEXTS, LINES_COPYRIGHT);
+  display.set(kMenuHeader, kCopyrightTexts, kLinesCopyright);
   delay(3000);
   
   keypad.setup();
@@ -54,15 +54,15 @@ void setup() {
   
   if(!filehandler.setup()) {
     // On error display error msg and reset arduino
-    display.set(MENU_HEADER, ERROR_HEADER, "SD init failed! ", "Automatically  reboot");
+    display.set(kMenuHeader, kErrorHeader, "SD init failed! ", "Automatically  reboot");
     delay(3000);
     softwareReset::standard();
   } else {
-    display.set(MENU_HEADER, "SD init done.   ");
+    display.set(kMenuHeader, "SD init done.   ");
     delay(1000);
   }
 
-  display.set(MENU_HEADER, "Scanning files  ");
+  display.set(kMenuHeader, "Scanning files  ");
   delay(500);
   filehandler.scanForFiles();
 

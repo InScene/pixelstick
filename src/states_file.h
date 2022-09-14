@@ -12,7 +12,7 @@ void s1_1_file_select()
     #ifdef STATE_DEBUG
       Serial.println("State s1_1_file_select");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_SELECT, filehandler.getFilename());
+    display.set(kMenuHeader, kMenuFileHeader, kMenuFileSelect, filehandler.getFilename());
   }
 }
 
@@ -22,7 +22,7 @@ void s1_1_1_now_playing() {
   const uint8_t brightness = logicValues.getBrightness();
   const unsigned long frameDelay = logicValues.getFrameDelay();
 
-  display.set(MENU_HEADER, MENU_HEADER_NOW_PLAYING, filename);
+  display.set(kMenuHeader, kMenuHeaderNowPlaying, filename);
   delay(logicValues.getInitDelay());
   uint16_t repeatTimes = logicValues.getRepeatTimes();
   if (repeatTimes > 1) {
@@ -42,15 +42,15 @@ void s1_1_1_now_playing() {
   switch (fileError)
   {
   case FileHandler::FILE_READ_ERROR:
-    display.set(MENU_HEADER, ERROR_HEADER, "Error reading file");
+    display.set(kMenuHeader, kErrorHeader, "Error reading file");
     delay(1000);
     break;
   case FileHandler::FILE_NOT_A_BITMAP:
-    display.set(MENU_HEADER, ERROR_HEADER, "not a bitmap");
+    display.set(kMenuHeader, kErrorHeader, "not a bitmap");
     delay(1000);
     break;
   case FileHandler::UNSUPPORTED_BITMAP:
-    display.set(MENU_HEADER, ERROR_HEADER, "Unsupported", "Bitmap Use 24bpp");
+    display.set(kMenuHeader, kErrorHeader, "Unsupported", "Bitmap Use 24bpp");
     delay(1000);
     break;
   
@@ -72,8 +72,8 @@ void s1_2_brightness(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_2_brightness");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_BRIGHTNESS,
-                (uint16_t)logicValues.getBrightness(), MENU_FILE_BRIGHTNESS_VALUE);
+    display.set(kMenuHeader, kMenuFileHeader, kMenuFileBrightness,
+                (uint16_t)logicValues.getBrightness(), kMenuFileBrightnessValue);
   }
 }
 
@@ -90,8 +90,8 @@ void s1_3_init_delay(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_3_init_delay");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_INIT_DELAY, 
-                logicValues.getInitDelay(), MENU_FILE_INIT_DELAY_VALUE);
+    display.set(kMenuHeader, kMenuFileHeader, kMenuFileInitDelay, 
+                logicValues.getInitDelay(), kMenuFileInitDelayValue);
   }
 }
 
@@ -108,8 +108,8 @@ void s1_4_frame_delay(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_4_frame_delay");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_FRAME_DELAY, 
-                logicValues.getFrameDelay(), MENU_FILE_FRAME_DELAY_VALUE);
+    display.set(kMenuHeader, kMenuFileHeader, kMenuFileFrameDelay, 
+                logicValues.getFrameDelay(), kMenuFileFrameDelayValue);
   }
 }
 
@@ -126,7 +126,7 @@ void s1_5_repeat_times(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_5_repeat_times");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_REPEAT_TIMES,
+    display.set(kMenuHeader, kMenuFileHeader, kMenuFileRepeatTimes,
                 logicValues.getRepeatTimes());
   }
 }
@@ -144,8 +144,8 @@ void s1_6_repeat_delay(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_6_repeat_delay");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_REPEAT_DELAY, 
-                logicValues.getRepeatDelay(), MENU_FILE_REPEAT_DELAY_VALUE);
+    display.set(kMenuHeader, kMenuFileHeader, kMenuFileRepeatDelay, 
+                logicValues.getRepeatDelay(), kMenuFileRepeatDelayValue);
   }
 }
 
@@ -162,13 +162,13 @@ void s1_7_reset_values(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_7_reset_values");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_RESET_VALUES);
+    display.set(kMenuHeader, kMenuFileHeader, kMenuFileResetValue);
   }
 }
 
 void s1_7_1_reset_to_default(){
   logicValues.resetValuesToDefault();
-  display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_VALUE_RESETTED);
+  display.set(kMenuHeader, kMenuFileHeader, kMenuValueResetted);
   delay(3000);
 }
 
@@ -177,7 +177,7 @@ void s1_8_main_menu(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_8_main_menu");
     #endif
-    display.set(MENU_HEADER, MENU_FILE_HEADER, MENU_FILE_MAIN_MENU);
+    display.set(kMenuHeader, kMenuFileHeader, kMenuFileMainMenu);
   }
 }
 

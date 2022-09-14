@@ -6,8 +6,8 @@
 
 #include <Arduino.h>
 
-#define LINES_COPYRIGHT 5
-static String COPYRIGHT_TEXTS[LINES_COPYRIGHT] = {
+const uint8_t kLinesCopyright = 5;
+const String kCopyrightTexts[kLinesCopyright] = {
   "(c) Christian Mertens 2022",
   "V1.2",
   " ",
@@ -15,29 +15,29 @@ static String COPYRIGHT_TEXTS[LINES_COPYRIGHT] = {
   "   Please wait"
 };
 
-#define MENU_HEADER F("LIGHTY")
-#define ERROR_HEADER F("ERROR")
+const String kMenuHeader = "LIGHTY";
+const String kErrorHeader = "ERROR";
 
-#define MENU_MAIN_HEADER F("Main Menu ")
-#define MENU_MAIN_FILE F("1:File ")
+const String kMenuMainHeader = "Main Menu ";
+const String kMenuMainFile = "1:File ";
 
-#define MENU_FILE_HEADER F("1:File ")
-#define MENU_FILE_SELECT F("1:File Select ")
-#define MENU_FILE_BRIGHTNESS F("2:Brightness ")
-#define MENU_FILE_BRIGHTNESS_VALUE F("Value %: ")
-#define MENU_FILE_INIT_DELAY F("3:Init Delay ")
-#define MENU_FILE_INIT_DELAY_VALUE F("Value ms: ")
-#define MENU_FILE_FRAME_DELAY F("4:Frame Delay")
-#define MENU_FILE_FRAME_DELAY_VALUE F("Value ms: ")
-#define MENU_FILE_REPEAT_TIMES F("5:Repeat Times")
-#define MENU_FILE_REPEAT_DELAY F("6:Repeat Delay")
-#define MENU_FILE_REPEAT_DELAY_VALUE F("Value ms: ")
-#define MENU_FILE_RESET_VALUES F("7:Reset Values")
-#define MENU_FILE_MAIN_MENU F("8:Main Menu")
+const String kMenuFileHeader = "1:File ";
+const String kMenuFileSelect = "1:File Select ";
+const String kMenuFileBrightness = "2:Brightness ";
+const String kMenuFileBrightnessValue = "Value %: ";
+const String kMenuFileInitDelay = "3:Init Delay ";
+const String kMenuFileInitDelayValue = "Value ms: ";
+const String kMenuFileFrameDelay =  "4:Frame Delay";
+const String kMenuFileFrameDelayValue = "Value ms: ";
+const String kMenuFileRepeatTimes = "5:Repeat Times";
+const String kMenuFileRepeatDelay = "6:Repeat Delay";
+const String kMenuFileRepeatDelayValue = "Value ms: ";
+const String kMenuFileResetValue =  "7:Reset Values";
+const String kMenuFileMainMenu = "8:Main Menu";
 
-#define MENU_HEADER_NOW_PLAYING F(" ")
-#define MENU_NOW_PLAYING F("Now Playing")
+const String kMenuHeaderNowPlaying = " ";
+const String kMenuNowPlaying = "Now Playing";
 
-#define MENU_VALUE_RESETTED F("Values resetted")
+const String kMenuValueResetted = "Values resetted";
 
 #endif // __TEXT_DEFINES_H__
