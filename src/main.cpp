@@ -50,9 +50,9 @@ void setup() {
   
   keypad.setup();
 
-  stripHandler.setup();
+  stripHandler.Setup();
   
-  if(!filehandler.setup()) {
+  if(!filehandler.Setup()) {
     // On error display error msg and reset arduino
     display.Set(kMenuHeader, kErrorHeader, "SD init failed! ", "Automatically  reboot");
     delay(3000);
@@ -64,9 +64,9 @@ void setup() {
 
   display.Set(kMenuHeader, "Scanning files  ");
   delay(500);
-  filehandler.scanForFiles();
+  filehandler.ScanForFiles();
 
-  stripHandler.clear();
+  stripHandler.Clear();
 
   state_machine_setup();
 }

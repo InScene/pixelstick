@@ -18,7 +18,7 @@ void s1_1_file_select()
 
 void s1_1_1_now_playing() {
   FileHandler::ErrorCode fileError;
-  const String filename = filehandler.getFilename();
+  const String filename = filehandler.GetFilename();
   const uint8_t brightness = logicValues.getBrightness();
   const unsigned long frameDelay = logicValues.getFrameDelay();
 
@@ -27,29 +27,29 @@ void s1_1_1_now_playing() {
   uint16_t repeatTimes = logicValues.getRepeatTimes();
   if (repeatTimes > 1) {
     for (int x = repeatTimes; x > 0; x--) {
-      fileError = filehandler.sendFile(filename, brightness, frameDelay);
-      if(fileError != FileHandler::NO_ERROR) {
+      fileError = filehandler.SendFile(filename, brightness, frameDelay);
+      if(fileError != FileHandler::kNoError) {
         break;
       }
       delay(logicValues.getRepeatDelay());
     }
   }
   else {
-    fileError = filehandler.sendFile(filename, brightness, frameDelay);
+    fileError = filehandler.SendFile(filename, brightness, frameDelay);
   }
-  stripHandler.clear();
+  stripHandler.Clear();
 
   switch (fileError)
   {
-  case FileHandler::FILE_READ_ERROR:
+  case FileHandler::kFileReadError:
     display.Set(kMenuHeader, kErrorHeader, "Error reading file");
     delay(1000);
     break;
-  case FileHandler::FILE_NOT_A_BITMAP:
+  case FileHandler::kFileNotABitmap:
     display.Set(kMenuHeader, kErrorHeader, "not a bitmap");
     delay(1000);
     break;
-  case FileHandler::UNSUPPORTED_BITMAP:
+  case FileHandler::kUnsupportedBitmap:
     display.Set(kMenuHeader, kErrorHeader, "Unsupported", "Bitmap Use 24bpp");
     delay(1000);
     break;
@@ -60,11 +60,11 @@ void s1_1_1_now_playing() {
 }
 
 void s1_1_2_next_file() {
-  filehandler.selectNextFile();
+  filehandler.SelectNextFile();
 }
 
 void s1_1_3_prev_file() {
-  filehandler.selectPreviousFile();
+  filehandler.SelectPreviousFile();
 }
 
 void s1_2_brightness(){
