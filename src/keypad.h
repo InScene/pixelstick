@@ -5,32 +5,32 @@
 #define __KEYPAD_H__
 
 // Setup 5 way joystick
-#define UPPIN 22
-#define DOWNPIN 23
-#define LEFTPIN 24
-#define RIGHTPIN 25
-#define ENTPIN 26
+const uint8_t kUpPin = 22;
+const uint8_t kDownPin = 23;
+const uint8_t kLeftPin = 24;
+const uint8_t kRightPin = 25;
+const uint8_t kEntPin = 26;
 class KeyPad 
 {
   public:
-    enum key_val{
-      key_up = 0,
-      key_down = 1,
-      key_left = 2,
-      key_right = 3,
-      key_enter = 4,
-      key_error = 254
+    enum KeyVal{
+      kUp = 0,
+      kDown = 1,
+      kLeft = 2,
+      kRight = 3,
+      kEnter = 4,
+      kError = 254
     };
 
     KeyPad();
-    void setup();
-    key_val read();
-    key_val getLastReadedKey();
+    void Setup();
+    KeyVal Read();
+    KeyVal GetLastReadedKey();
 
   private:
-    key_val oldkey;
+    KeyVal old_key_;
 
-    key_val read_value();
+    KeyVal ReadValue();
 };
 
 #endif // __KEYPAD_H__

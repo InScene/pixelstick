@@ -184,7 +184,7 @@ void s1_8_main_menu(){
 /********************* Transitions ****************************/
 
 bool transitionS1_1_to_S1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_left){
+  if(keypad.GetLastReadedKey() == KeyPad::kLeft){
     return true;
   }
 
@@ -192,7 +192,7 @@ bool transitionS1_1_to_S1() {
 }
 
 bool transitionS1_1_to_S1_1_1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_enter){
+  if(keypad.GetLastReadedKey() == KeyPad::kEnter){
     return true;
   }
 
@@ -200,7 +200,7 @@ bool transitionS1_1_to_S1_1_1() {
 }
 
 bool transitionS1_1_to_S1_1_2() {
-  if(keypad.getLastReadedKey() == KeyPad::key_right){
+  if(keypad.GetLastReadedKey() == KeyPad::kRight){
     return true;
   }
 
@@ -208,7 +208,7 @@ bool transitionS1_1_to_S1_1_2() {
 }
 
 bool transitionS1_1_to_S1_1_3() {
-  if(keypad.getLastReadedKey() == KeyPad::key_left){
+  if(keypad.GetLastReadedKey() == KeyPad::kLeft){
     return true;
   }
 
@@ -217,7 +217,7 @@ bool transitionS1_1_to_S1_1_3() {
 
 
 bool transitionS1_1_to_S1_2() {
-  if(keypad.getLastReadedKey() == KeyPad::key_down){
+  if(keypad.GetLastReadedKey() == KeyPad::kDown){
     return true;
   }
 
@@ -225,7 +225,7 @@ bool transitionS1_1_to_S1_2() {
 }
 
 bool transitionS1_1_to_S1_8() {
-  if(keypad.getLastReadedKey() == KeyPad::key_up){
+  if(keypad.GetLastReadedKey() == KeyPad::kUp){
     return true;
   }
 
@@ -245,7 +245,7 @@ bool transitionS1_1_3_to_S1_1() {
 
 
 bool transitionS1_2_to_S1_2_1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_right){
+  if(keypad.GetLastReadedKey() == KeyPad::kRight){
     return true;
   }
 
@@ -253,7 +253,7 @@ bool transitionS1_2_to_S1_2_1() {
 }
 
 bool transitionS1_2_to_S1_2_2() {
-  if(keypad.getLastReadedKey() == KeyPad::key_left){
+  if(keypad.GetLastReadedKey() == KeyPad::kLeft){
     return true;
   }
 
@@ -261,7 +261,7 @@ bool transitionS1_2_to_S1_2_2() {
 }
 
 bool transitionS1_2_to_S1_1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_up){
+  if(keypad.GetLastReadedKey() == KeyPad::kUp){
     logicValues.storeValuesToEeprom();
     return true;
   }
@@ -270,7 +270,7 @@ bool transitionS1_2_to_S1_1() {
 }
 
 bool transitionS1_2_to_S1_3() {
-  if(keypad.getLastReadedKey() == KeyPad::key_down){
+  if(keypad.GetLastReadedKey() == KeyPad::kDown){
     logicValues.storeValuesToEeprom();
     return true;
   }
@@ -288,7 +288,7 @@ bool transitionS1_2_2_to_S1_2() {
 
 
 bool transitionS1_3_to_S1_3_1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_right){
+  if(keypad.GetLastReadedKey() == KeyPad::kRight){
     return true;
   }
 
@@ -296,7 +296,7 @@ bool transitionS1_3_to_S1_3_1() {
 }
 
 bool transitionS1_3_to_S1_3_2() {
-  if(keypad.getLastReadedKey() == KeyPad::key_left){
+  if(keypad.GetLastReadedKey() == KeyPad::kLeft){
     return true;
   }
 
@@ -304,7 +304,7 @@ bool transitionS1_3_to_S1_3_2() {
 }
 
 bool transitionS1_3_to_S1_2() {
-  if(keypad.getLastReadedKey() == KeyPad::key_up){
+  if(keypad.GetLastReadedKey() == KeyPad::kUp){
     logicValues.storeValuesToEeprom();
     return true;
   }
@@ -313,7 +313,7 @@ bool transitionS1_3_to_S1_2() {
 }
 
 bool transitionS1_3_to_S1_4() {
-  if(keypad.getLastReadedKey() == KeyPad::key_down){
+  if(keypad.GetLastReadedKey() == KeyPad::kDown){
     logicValues.storeValuesToEeprom();
     return true;
   }
@@ -331,7 +331,7 @@ bool transitionS1_3_2_to_S1_3() {
 
 
 bool transitionS1_4_to_S1_4_1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_right){
+  if(keypad.GetLastReadedKey() == KeyPad::kRight){
     return true;
   }
 
@@ -339,7 +339,7 @@ bool transitionS1_4_to_S1_4_1() {
 }
 
 bool transitionS1_4_to_S1_4_2() {
-  if(keypad.getLastReadedKey() == KeyPad::key_left){
+  if(keypad.GetLastReadedKey() == KeyPad::kLeft){
     return true;
   }
 
@@ -347,7 +347,7 @@ bool transitionS1_4_to_S1_4_2() {
 }
 
 bool transitionS1_4_to_S1_3() {
-  if(keypad.getLastReadedKey() == KeyPad::key_up){
+  if(keypad.GetLastReadedKey() == KeyPad::kUp){
     logicValues.storeValuesToEeprom();
     return true;
   }
@@ -356,7 +356,7 @@ bool transitionS1_4_to_S1_3() {
 }
 
 bool transitionS1_4_to_S1_5() {
-  if(keypad.getLastReadedKey() == KeyPad::key_down){
+  if(keypad.GetLastReadedKey() == KeyPad::kDown){
     logicValues.storeValuesToEeprom();
     return true;
   }
@@ -374,7 +374,7 @@ bool transitionS1_4_2_to_S1_4() {
 
 
 bool transitionS1_5_to_S1_5_1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_right){
+  if(keypad.GetLastReadedKey() == KeyPad::kRight){
     return true;
   }
 
@@ -382,7 +382,7 @@ bool transitionS1_5_to_S1_5_1() {
 }
 
 bool transitionS1_5_to_S1_5_2() {
-  if(keypad.getLastReadedKey() == KeyPad::key_left){
+  if(keypad.GetLastReadedKey() == KeyPad::kLeft){
     return true;
   }
 
@@ -390,7 +390,7 @@ bool transitionS1_5_to_S1_5_2() {
 }
 
 bool transitionS1_5_to_S1_4() {
-  if(keypad.getLastReadedKey() == KeyPad::key_up){
+  if(keypad.GetLastReadedKey() == KeyPad::kUp){
     logicValues.storeValuesToEeprom();
     return true;
   }
@@ -399,7 +399,7 @@ bool transitionS1_5_to_S1_4() {
 }
 
 bool transitionS1_5_to_S1_6() {
-  if(keypad.getLastReadedKey() == KeyPad::key_down){
+  if(keypad.GetLastReadedKey() == KeyPad::kDown){
     logicValues.storeValuesToEeprom();
     return true;
   }
@@ -417,7 +417,7 @@ bool transitionS1_5_2_to_S1_5() {
 
 
 bool transitionS1_6_to_S1_6_1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_right){
+  if(keypad.GetLastReadedKey() == KeyPad::kRight){
     return true;
   }
 
@@ -425,7 +425,7 @@ bool transitionS1_6_to_S1_6_1() {
 }
 
 bool transitionS1_6_to_S1_6_2() {
-  if(keypad.getLastReadedKey() == KeyPad::key_left){
+  if(keypad.GetLastReadedKey() == KeyPad::kLeft){
     return true;
   }
 
@@ -433,7 +433,7 @@ bool transitionS1_6_to_S1_6_2() {
 }
 
 bool transitionS1_6_to_S1_5() {
-  if(keypad.getLastReadedKey() == KeyPad::key_up){
+  if(keypad.GetLastReadedKey() == KeyPad::kUp){
     logicValues.storeValuesToEeprom();
     return true;
   }
@@ -442,7 +442,7 @@ bool transitionS1_6_to_S1_5() {
 }
 
 bool transitionS1_6_to_S1_7() {
-  if(keypad.getLastReadedKey() == KeyPad::key_down){
+  if(keypad.GetLastReadedKey() == KeyPad::kDown){
     logicValues.storeValuesToEeprom();
     return true;
   }
@@ -460,7 +460,7 @@ bool transitionS1_6_2_to_S1_6() {
 
 
 bool transitionS1_7_to_S1_8() {
-  if(keypad.getLastReadedKey() == KeyPad::key_down){
+  if(keypad.GetLastReadedKey() == KeyPad::kDown){
     return true;
   }
 
@@ -468,7 +468,7 @@ bool transitionS1_7_to_S1_8() {
 }
 
 bool transitionS1_7_to_S1_6() {
-  if(keypad.getLastReadedKey() == KeyPad::key_up){
+  if(keypad.GetLastReadedKey() == KeyPad::kUp){
     return true;
   }
 
@@ -476,7 +476,7 @@ bool transitionS1_7_to_S1_6() {
 }
 
 bool transitionS1_7_to_S1_7_1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_enter){
+  if(keypad.GetLastReadedKey() == KeyPad::kEnter){
     return true;
   }
 
@@ -489,7 +489,7 @@ bool transitionS1_7_1_to_S1_7() {
 
 
 bool transitionS1_8_to_S1_1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_down){
+  if(keypad.GetLastReadedKey() == KeyPad::kDown){
     return true;
   }
 
@@ -497,7 +497,7 @@ bool transitionS1_8_to_S1_1() {
 }
 
 bool transitionS1_8_to_S1_7() {
-  if(keypad.getLastReadedKey() == KeyPad::key_up){
+  if(keypad.GetLastReadedKey() == KeyPad::kUp){
     return true;
   }
 
@@ -505,7 +505,7 @@ bool transitionS1_8_to_S1_7() {
 }
 
 bool transitionS1_8_to_S1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_enter){
+  if(keypad.GetLastReadedKey() == KeyPad::kEnter){
     return true;
   }
 

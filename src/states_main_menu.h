@@ -19,7 +19,7 @@ void s1_file() {
  * Transition from state s1_file to s1_1_file_select.
  */
 bool transitionS1_to_S1_1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_enter){
+  if(keypad.GetLastReadedKey() == KeyPad::kEnter){
     return true;
   }
 

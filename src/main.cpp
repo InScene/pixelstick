@@ -48,7 +48,7 @@ void setup() {
   display.Set(kMenuHeader, kCopyrightTexts, kLinesCopyright);
   delay(3000);
   
-  keypad.setup();
+  keypad.Setup();
 
   stripHandler.Setup();
   
@@ -74,7 +74,7 @@ void setup() {
 // The Main Loop for the program starts here...
 // This will loop endlessly looking for a key press to perform a function
 void loop() {
-  keypad.read();
+  keypad.Read();
   machine.run();
   delay(500);
 }
