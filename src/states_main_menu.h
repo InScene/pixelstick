@@ -11,7 +11,7 @@ void s1_file() {
     #ifdef STATE_DEBUG
       Serial.println("State s1_file");
     #endif
-    display.set(kMenuHeader, kMenuMainHeader, kMenuMainFile);
+    display.Set(kMenuHeader, kMenuMainHeader, kMenuMainFile);
   }
 }
 

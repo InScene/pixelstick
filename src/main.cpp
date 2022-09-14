@@ -42,10 +42,10 @@ void setup() {
 
   logicValues.restoreValuesFromEeprom();
   
-  display.setup();
+  display.Setup();
   
   // Print copyright on display
-  display.set(kMenuHeader, kCopyrightTexts, kLinesCopyright);
+  display.Set(kMenuHeader, kCopyrightTexts, kLinesCopyright);
   delay(3000);
   
   keypad.setup();
@@ -54,15 +54,15 @@ void setup() {
   
   if(!filehandler.setup()) {
     // On error display error msg and reset arduino
-    display.set(kMenuHeader, kErrorHeader, "SD init failed! ", "Automatically  reboot");
+    display.Set(kMenuHeader, kErrorHeader, "SD init failed! ", "Automatically  reboot");
     delay(3000);
     softwareReset::standard();
   } else {
-    display.set(kMenuHeader, "SD init done.   ");
+    display.Set(kMenuHeader, "SD init done.   ");
     delay(1000);
   }
 
-  display.set(kMenuHeader, "Scanning files  ");
+  display.Set(kMenuHeader, "Scanning files  ");
   delay(500);
   filehandler.scanForFiles();
 

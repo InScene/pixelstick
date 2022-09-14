@@ -12,7 +12,7 @@ void s1_1_file_select()
     #ifdef STATE_DEBUG
       Serial.println("State s1_1_file_select");
     #endif
-    display.set(kMenuHeader, kMenuFileHeader, kMenuFileSelect, filehandler.getFilename());
+    display.Set(kMenuHeader, kMenuFileHeader, kMenuFileSelect, filehandler.GetFilename());
   }
 }
 
@@ -22,7 +22,7 @@ void s1_1_1_now_playing() {
   const uint8_t brightness = logicValues.getBrightness();
   const unsigned long frameDelay = logicValues.getFrameDelay();
 
-  display.set(kMenuHeader, kMenuHeaderNowPlaying, filename);
+  display.Set(kMenuHeader, kMenuHeaderNowPlaying, filename);
   delay(logicValues.getInitDelay());
   uint16_t repeatTimes = logicValues.getRepeatTimes();
   if (repeatTimes > 1) {
@@ -42,15 +42,15 @@ void s1_1_1_now_playing() {
   switch (fileError)
   {
   case FileHandler::FILE_READ_ERROR:
-    display.set(kMenuHeader, kErrorHeader, "Error reading file");
+    display.Set(kMenuHeader, kErrorHeader, "Error reading file");
     delay(1000);
     break;
   case FileHandler::FILE_NOT_A_BITMAP:
-    display.set(kMenuHeader, kErrorHeader, "not a bitmap");
+    display.Set(kMenuHeader, kErrorHeader, "not a bitmap");
     delay(1000);
     break;
   case FileHandler::UNSUPPORTED_BITMAP:
-    display.set(kMenuHeader, kErrorHeader, "Unsupported", "Bitmap Use 24bpp");
+    display.Set(kMenuHeader, kErrorHeader, "Unsupported", "Bitmap Use 24bpp");
     delay(1000);
     break;
   
@@ -72,7 +72,7 @@ void s1_2_brightness(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_2_brightness");
     #endif
-    display.set(kMenuHeader, kMenuFileHeader, kMenuFileBrightness,
+    display.Set(kMenuHeader, kMenuFileHeader, kMenuFileBrightness,
                 (uint16_t)logicValues.getBrightness(), kMenuFileBrightnessValue);
   }
 }
@@ -90,7 +90,7 @@ void s1_3_init_delay(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_3_init_delay");
     #endif
-    display.set(kMenuHeader, kMenuFileHeader, kMenuFileInitDelay, 
+    display.Set(kMenuHeader, kMenuFileHeader, kMenuFileInitDelay, 
                 logicValues.getInitDelay(), kMenuFileInitDelayValue);
   }
 }
@@ -108,7 +108,7 @@ void s1_4_frame_delay(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_4_frame_delay");
     #endif
-    display.set(kMenuHeader, kMenuFileHeader, kMenuFileFrameDelay, 
+    display.Set(kMenuHeader, kMenuFileHeader, kMenuFileFrameDelay, 
                 logicValues.getFrameDelay(), kMenuFileFrameDelayValue);
   }
 }
@@ -126,7 +126,7 @@ void s1_5_repeat_times(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_5_repeat_times");
     #endif
-    display.set(kMenuHeader, kMenuFileHeader, kMenuFileRepeatTimes,
+    display.Set(kMenuHeader, kMenuFileHeader, kMenuFileRepeatTimes,
                 logicValues.getRepeatTimes());
   }
 }
@@ -144,7 +144,7 @@ void s1_6_repeat_delay(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_6_repeat_delay");
     #endif
-    display.set(kMenuHeader, kMenuFileHeader, kMenuFileRepeatDelay, 
+    display.Set(kMenuHeader, kMenuFileHeader, kMenuFileRepeatDelay, 
                 logicValues.getRepeatDelay(), kMenuFileRepeatDelayValue);
   }
 }
@@ -162,13 +162,13 @@ void s1_7_reset_values(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_7_reset_values");
     #endif
-    display.set(kMenuHeader, kMenuFileHeader, kMenuFileResetValue);
+    display.Set(kMenuHeader, kMenuFileHeader, kMenuFileResetValue);
   }
 }
 
 void s1_7_1_reset_to_default(){
   logicValues.resetValuesToDefault();
-  display.set(kMenuHeader, kMenuFileHeader, kMenuValueResetted);
+  display.Set(kMenuHeader, kMenuFileHeader, kMenuValueResetted);
   delay(3000);
 }
 
@@ -177,7 +177,7 @@ void s1_8_main_menu(){
     #ifdef STATE_DEBUG
       Serial.println("State s1_8_main_menu");
     #endif
-    display.set(kMenuHeader, kMenuFileHeader, kMenuFileMainMenu);
+    display.Set(kMenuHeader, kMenuFileHeader, kMenuFileMainMenu);
   }
 }
 
