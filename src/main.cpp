@@ -68,7 +68,7 @@ void setup() {
 
   stripHandler.Clear();
 
-  state_machine_setup();
+  StateMachineSetup();
 }
 
 // The Main Loop for the program starts here...
