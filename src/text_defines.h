@@ -6,8 +6,8 @@
 
 #include <Arduino.h>
 
-#define LINES_COPYRIGHT 5
-static String COPYRIGHT_TEXTS[LINES_COPYRIGHT] = {
+const uint8_t kLinesCopyright = 5;
+static const char* const kCopyrightTexts[kLinesCopyright] = {
   "(c) Christian Mertens 2022",
   "V1.2",
   " ",
@@ -15,29 +15,29 @@ static String COPYRIGHT_TEXTS[LINES_COPYRIGHT] = {
   "   Please wait"
 };
 
-#define MENU_HEADER F("LIGHTY")
-#define ERROR_HEADER F("ERROR")
+static const char* const kMenuHeader = "LIGHTY";
+static const char* const kErrorHeader = "ERROR";
 
-#define MENU_MAIN_HEADER F("Main Menu ")
-#define MENU_MAIN_FILE F("1:File ")
+static const char* const kMenuMainHeader = "Main Menu ";
+static const char* const kMenuMainFile = "1:File ";
 
-#define MENU_FILE_HEADER F("1:File ")
-#define MENU_FILE_SELECT F("1:File Select ")
-#define MENU_FILE_BRIGHTNESS F("2:Brightness ")
-#define MENU_FILE_BRIGHTNESS_VALUE F("Value %: ")
-#define MENU_FILE_INIT_DELAY F("3:Init Delay ")
-#define MENU_FILE_INIT_DELAY_VALUE F("Value ms: ")
-#define MENU_FILE_FRAME_DELAY F("4:Frame Delay")
-#define MENU_FILE_FRAME_DELAY_VALUE F("Value ms: ")
-#define MENU_FILE_REPEAT_TIMES F("5:Repeat Times")
-#define MENU_FILE_REPEAT_DELAY F("6:Repeat Delay")
-#define MENU_FILE_REPEAT_DELAY_VALUE F("Value ms: ")
-#define MENU_FILE_RESET_VALUES F("7:Reset Values")
-#define MENU_FILE_MAIN_MENU F("8:Main Menu")
+static const char* const kMenuFileHeader = "1:File ";
+static const char* const kMenuFileSelect = "1:File Select ";
+static const char* const kMenuFileBrightness = "2:Brightness ";
+static const char* const kMenuFileBrightnessValue = "Value %: ";
+static const char* const kMenuFileInitDelay = "3:Init Delay ";
+static const char* const kMenuFileInitDelayValue = "Value ms: ";
+static const char* const kMenuFileFrameDelay =  "4:Frame Delay";
+static const char* const kMenuFileFrameDelayValue = "Value ms: ";
+static const char* const kMenuFileRepeatTimes = "5:Repeat Times";
+static const char* const kMenuFileRepeatDelay = "6:Repeat Delay";
+static const char* const kMenuFileRepeatDelayValue = "Value ms: ";
+static const char* const kMenuFileResetValue =  "7:Reset Values";
+static const char* const kMenuFileMainMenu = "8:Main Menu";
 
-#define MENU_HEADER_NOW_PLAYING F(" ")
-#define MENU_NOW_PLAYING F("Now Playing")
+static const char* const kMenuHeaderNowPlaying = " ";
+static const char* const kMenuNowPlaying = "Now Playing";
 
-#define MENU_VALUE_RESETTED F("Values resetted")
+static const char* const kMenuValueResetted = "Values resetted";
 
 #endif // __TEXT_DEFINES_H__

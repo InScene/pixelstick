@@ -4,7 +4,7 @@
 #include "file_handler.h"
 #include <Arduino.h>
 
-PROGMEM const unsigned char gammaTable[]  = {
+PROGMEM const unsigned char kGammaTable[]  = {
   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,
   1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  2,  2,  2,
@@ -24,18 +24,18 @@ PROGMEM const unsigned char gammaTable[]  = {
 };
 
 FileHandler::FileHandler(StripHandler& strip) :
-  stripHandler(strip),
-  fileIndex(0),
-  nbOfFiles(0)
+  stripHandler_(strip),
+  file_index_(0),
+  nb_files_(0)
 {
   
 }
 
-bool FileHandler::setup()
+bool FileHandler::Setup()
 {
-  pinMode(SDssPin, OUTPUT);
+  pinMode(kSdssPin, OUTPUT);
 
-  while (!SD.begin(SDssPin)) {
+  while (!SD.begin(kSdssPin)) {
     // SD init failed    
     return false;
   }
@@ -43,155 +43,152 @@ bool FileHandler::setup()
   return  true;
 }
 
-void FileHandler::scanForFiles()
+void FileHandler::ScanForFiles()
 {
-  root = SD.open("/");
-  getFileNamesFromSD(root);
-  isort(fileNames, nbOfFiles);
+  root_ = SD.open("/");
+  GetFileNamesFromSD(root_);
+  ISort(file_names_, nb_files_);
 }
 
-String FileHandler::getFilename() const
+String FileHandler::GetFilename() const
 {
-  return fileNames[fileIndex];
+  return file_names_[file_index_];
 }
 
-FileHandler::ErrorCode FileHandler::sendFile(const String& Filename, 
+FileHandler::ErrorCode FileHandler::SendFile(const String& Filename, 
                                              const uint8_t brightness,
                                              const unsigned long frameDelay)
 {
-  ErrorCode error = NO_ERROR;
+  ErrorCode error = kNoError;
   char temp[14];
   Filename.toCharArray(temp, 14);
-  dataFile = SD.open(temp);
+  data_file_ = SD.open(temp);
 
   // if the file is available send it to the LED's
-  if (dataFile) {
-    error = read_the_file(brightness, frameDelay);
-    dataFile.close();
+  if (data_file_) {
+    error = ReadFile(brightness, frameDelay);
+    data_file_.close();
   }
   else {
-    error = FILE_READ_ERROR;
-    setup();
+    error = kFileReadError;
+    Setup();
   }
 
   return error;
 }
 
-void FileHandler::selectNextFile()
+void FileHandler::SelectNextFile()
 {
-  if (fileIndex < nbOfFiles - 1) {
-    fileIndex++;
+  if (file_index_ < nb_files_ - 1) {
+    file_index_++;
   }
   else {
-    fileIndex = 0;                // On the last file so wrap round to the first file
+    file_index_ = 0;                // On the last file so wrap round to the first file
   }
 }
 
-void FileHandler::selectPreviousFile()
+void FileHandler::SelectPreviousFile()
 {
-  if (fileIndex > 0) {
-    fileIndex--;
+  if (file_index_ > 0) {
+    file_index_--;
   }
   else {
-    fileIndex = nbOfFiles - 1;   // On the last file so wrap round to the first file
+    file_index_ = nb_files_ - 1;   // On the last file so wrap round to the first file
   }
 }
 
-FileHandler::ErrorCode FileHandler::read_the_file(const uint8_t brightness, 
-                                                  const unsigned long frameDelay)
+FileHandler::ErrorCode FileHandler::ReadFile(const uint8_t brightness, 
+                                             const unsigned long frameDelay)
 {
-  #define MYBMP_BF_TYPE           0x4D42
-  #define MYBMP_BF_OFF_BITS       54
-  #define MYBMP_BI_SIZE           40
-  #define MYBMP_BI_RGB            0L
-  #define MYBMP_BI_RLE8           1L
-  #define MYBMP_BI_RLE4           2L
-  #define MYBMP_BI_BITFIELDS      3L
+  const uint16_t kMyBmpBfType = 0x4D42;
+  const uint32_t kMyBmpBfOffBits = 54;
+  const uint32_t kMyBmpBiSize = 40;
+  const uint32_t kMyBmpBiRgb = 0L;
 
-  ErrorCode error = NO_ERROR;
+  ErrorCode error = kNoError;
 
-  uint16_t bmpType = readInt();
-  uint32_t bmpSize = readLong();       // Do not remove. The data must be read to comply with the sequence
-  uint16_t bmpReserved1 = readInt();   // Do not remove. The data must be read to comply with the sequence
-  uint16_t bmpReserved2 = readInt();   // Do not remove. The data must be read to comply with the sequence
-  uint32_t bmpOffBits = readLong();
-  bmpOffBits = 54;
+  uint16_t bmp_type = ReadInt();
+  uint32_t bmp_size = ReadLong();       // Don't remove. Data must be read to comply sequence
+  uint16_t bmp_reserved_1 = ReadInt();  // Don't remove. Data must be read to comply sequence
+  uint16_t bmp_reserved_2 = ReadInt();  // Don't remove. Data must be read to comply sequence
+  uint32_t bmp_off_bits = ReadLong();
+  bmp_off_bits = 54;
 
   // Suppress compiler warning for unused variables
-  (void)bmpSize;
-  (void)bmpReserved1;
-  (void)bmpReserved2;
+  (void)bmp_size;
+  (void)bmp_reserved_1;
+  (void)bmp_reserved_2;
 
   /* Check file header */
-  if (bmpType != MYBMP_BF_TYPE || bmpOffBits != MYBMP_BF_OFF_BITS) {
-    error = FILE_NOT_A_BITMAP;
+  if (bmp_type != kMyBmpBfType || bmp_off_bits != kMyBmpBfOffBits) {
+    error = kFileNotABitmap;
     return error;
   }
 
   /* Read info header */
-  uint32_t imgSize = readLong();
-  uint32_t imgWidth = readLong();
-  uint32_t imgHeight = readLong();
-  uint16_t imgPlanes = readInt();
-  uint16_t imgBitCount = readInt();
-  uint32_t imgCompression = readLong();
-  uint32_t imgSizeImage = readLong();
-  uint32_t imgXPelsPerMeter = readLong();  // Do not remove. The data must be read to comply with the sequence
-  uint32_t imgYPelsPerMeter = readLong();  // Do not remove. The data must be read to comply with the sequence
-  uint32_t imgClrUsed = readLong();        // Do not remove. The data must be read to comply with the sequence
-  uint32_t imgClrImportant = readLong();   // Do not remove. The data must be read to comply with the sequence
+  uint32_t img_size = ReadLong();
+  uint32_t img_width = ReadLong();
+  uint32_t img_height = ReadLong();
+  uint16_t img_planes = ReadInt();
+  uint16_t img_bit_count = ReadInt();
+  uint32_t img_compression = ReadLong();
+  uint32_t img_size_image = ReadLong();
+  uint32_t img_x_pels_per_meter = ReadLong(); // Don't remove. Data must be read to comply sequence
+  uint32_t img_y_pels_per_meter = ReadLong(); // Don't remove. Data must be read to comply sequence
+  uint32_t img_clr_used = ReadLong();         // Don't remove. Data must be read to comply sequence
+  uint32_t img_clr_important = ReadLong();    // Don't remove. Data must be read to comply sequence
 
   // Suppress compiler warning for unused variables
-  (void)imgXPelsPerMeter;
-  (void)imgYPelsPerMeter;
-  (void)imgClrUsed;
-  (void)imgClrImportant;
+  (void)img_x_pels_per_meter;
+  (void)img_y_pels_per_meter;
+  (void)img_clr_used;
+  (void)img_clr_important;
 
   /* Check info header */
-  if ( imgSize != MYBMP_BI_SIZE || imgWidth <= 0 ||
-       imgHeight <= 0 || imgPlanes != 1 ||
-       imgBitCount != 24 || imgCompression != MYBMP_BI_RGB ||
-       imgSizeImage == 0 )
+  if ( img_size != kMyBmpBiSize || img_width <= 0 ||
+       img_height <= 0 || img_planes != 1 ||
+       img_bit_count != 24 || img_compression != kMyBmpBiRgb ||
+       img_size_image == 0 )
   {
-    error = UNSUPPORTED_BITMAP;
+    error = kUnsupportedBitmap;
     return error;
   }
 
-  int displayWidth = imgWidth;
-  if (imgWidth > STRIP_LENGTH) {
-    displayWidth = STRIP_LENGTH;           //only display the number of led's we have
+  int display_width = img_width;
+  if (img_width > kStripLength) {
+    display_width = kStripLength;           //only display the number of led's we have
   }
 
   /* compute the line length */
-  uint32_t lineLength = imgWidth * 3;
-  if ((lineLength % 4) != 0)
-    lineLength = (lineLength / 4 + 1) * 4;
+  uint32_t line_length = img_width * 3;
+  if ((line_length % 4) != 0)
+    line_length = (line_length / 4 + 1) * 4;
 
-  for (int y = imgHeight; y > 0; y--) {
-    for (int x = 0; x < displayWidth; x++) {
-      uint32_t offset = (MYBMP_BF_OFF_BITS + (((y - 1) * lineLength) + (x * 3))) ;
-      dataFile.seek(offset);
+  for (int y = img_height; y > 0; y--) {
+    for (int x = 0; x < display_width; x++) {
+      uint32_t offset = (kMyBmpBfOffBits + (((y - 1) * line_length) + (x * 3))) ;
+      data_file_.seek(offset);
 
-      rgbValues rgbVal = getRGBwithGamma(brightness);
+      RgbValues rgbVal = GetRGBwithGamma(brightness);
 
     // TODO: Outsourde strip value call
-      stripHandler.setPixelColor(x, rgbVal.r, rgbVal.g, rgbVal.b);
+      stripHandler_.SetPixelColor(x, rgbVal.r, rgbVal.g, rgbVal.b);
     }
-    // TODO: outsource latchanddelay call
-    stripHandler.latchanddelay(frameDelay);
+    // TODO: outsource LatchAndDelay call
+    stripHandler_.LatchAndDelay(frameDelay);
   }
 
   return error;
 }
 
-void FileHandler::getFileNamesFromSD(File dir) {
-  int fileCount = 0;
-  String CurrentFilename = "";
+void FileHandler::GetFileNamesFromSD(File dir) {
+  int file_count = 0;
+  String current_filename = "";
   while (1) {
     File entry =  dir.openNextFile();
     if (! entry) {
       // no more files
-      nbOfFiles = fileCount;
+      nb_files_ = file_count;
       entry.close();
       break;
     }
@@ -199,10 +196,10 @@ void FileHandler::getFileNamesFromSD(File dir) {
       if (entry.isDirectory()) {
       }
       else {
-        CurrentFilename = entry.name();
-        if (CurrentFilename.endsWith(".bmp") || CurrentFilename.endsWith(".BMP") ) { //find files with our extension only
-          fileNames[fileCount] = entry.name();
-          fileCount++;
+        current_filename = entry.name();
+        if (current_filename.endsWith(".bmp") || current_filename.endsWith(".BMP") ) { //find files with our extension only
+          file_names_[file_count] = entry.name();
+          file_count++;
         }
       }
     }
@@ -210,43 +207,43 @@ void FileHandler::getFileNamesFromSD(File dir) {
   }
 }
 
-uint32_t FileHandler::readLong() {
-  uint32_t retValue;
-  byte incomingbyte;
+uint32_t FileHandler::ReadLong() {
+  uint32_t ret_value;
+  byte incoming_byte;
 
-  incomingbyte = readByte();
-  retValue = (uint32_t)((byte)incomingbyte);
+  incoming_byte = ReadByte();
+  ret_value = (uint32_t)((byte)incoming_byte);
 
-  incomingbyte = readByte();
-  retValue += (uint32_t)((byte)incomingbyte) << 8;
+  incoming_byte = ReadByte();
+  ret_value += (uint32_t)((byte)incoming_byte) << 8;
 
-  incomingbyte = readByte();
-  retValue += (uint32_t)((byte)incomingbyte) << 16;
+  incoming_byte = ReadByte();
+  ret_value += (uint32_t)((byte)incoming_byte) << 16;
 
-  incomingbyte = readByte();
-  retValue += (uint32_t)((byte)incomingbyte) << 24;
+  incoming_byte = ReadByte();
+  ret_value += (uint32_t)((byte)incoming_byte) << 24;
 
-  return retValue;
+  return ret_value;
 }
 
-uint16_t FileHandler::readInt() {
-  byte incomingbyte = 0;
-  uint16_t retValue = 0;
-  incomingbyte = readByte();
-  retValue += (uint16_t)((byte)incomingbyte);
-  incomingbyte = readByte();
-  retValue += (uint16_t)((byte)incomingbyte) << 8;
-  return retValue;
+uint16_t FileHandler::ReadInt() {
+  byte incoming_byte = 0;
+  uint16_t ret_value = 0;
+  incoming_byte = ReadByte();
+  ret_value += (uint16_t)((byte)incoming_byte);
+  incoming_byte = ReadByte();
+  ret_value += (uint16_t)((byte)incoming_byte) << 8;
+  return ret_value;
 }
 
-int FileHandler::readByte() {
-  int retbyte = -1;
-  while (retbyte < 0) retbyte = dataFile.read();
-  return retbyte;
+int FileHandler::ReadByte() {
+  int ret_byte = -1;
+  while (ret_byte < 0) ret_byte = data_file_.read();
+  return ret_byte;
 }
 
 // Sort the filenames in alphabetical order
-void FileHandler::isort(String * filenames, int n) {
+void FileHandler::ISort(String * filenames, int n) {
   for (int i = 1; i < n; ++i) {
     String j = filenames[i];
     int k;
@@ -258,16 +255,16 @@ void FileHandler::isort(String * filenames, int n) {
 }
 
 // TODO: Cancel dependence on brightness
-FileHandler::rgbValues FileHandler::getRGBwithGamma(const uint8_t brightness) {
-  rgbValues values;
-  values.g = gamma(readByte()) / (101 - brightness);
-  values.b = gamma(readByte()) / (101 - brightness);
-  values.r = gamma(readByte()) / (101 - brightness);
+FileHandler::RgbValues FileHandler::GetRGBwithGamma(const uint8_t brightness) {
+  RgbValues values;
+  values.g = Gamma(ReadByte()) / (101 - brightness);
+  values.b = Gamma(ReadByte()) / (101 - brightness);
+  values.r = Gamma(ReadByte()) / (101 - brightness);
 
   return values;
 }
 
-byte FileHandler::gamma(byte x)
+byte FileHandler::Gamma(byte x)
 {
-  return pgm_read_byte(&gammaTable[x]);
+  return pgm_read_byte(&kGammaTable[x]);
 }

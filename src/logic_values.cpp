@@ -4,249 +4,242 @@
 #include "logic_values.h"
 #include <EEPROM.h>
 
-#define DEFAULT_FRAME_DELAY 15
-#define DEFAULT_INIT_DELAY 0
-#define DEFAULT_REPEAT 0
-#define DEFAULT_REPEAT_DELAY 0
-#define DEFAULT_REPEAT_TIMES 1
-#define DEFAULT_BRIGHTNESS 20
-
-#define ULONG_MAX 0xFFFFFFFF
-#define OneSecInMs 1000
-#define OneHundredMs 100
-#define BRIGHTNESS_MAX 100
-#define REPEAT_MAX UINT16_MAX
-#define REPEAT_DELAY_MAX (ULONG_MAX-OneHundredMs)
-#define INIT_DELAY_MAX (ULONG_MAX-OneSecInMs)
-#define FRAME_DELAY_MAX ULONG_MAX
-#define REPEAT_TIMES_MAX UINT16_MAX
+const unsigned long kULongMax = 0xFFFFFFFF;
+const unsigned long kOneSecInMs = 1000;
+const unsigned long kOneHundredMs = 100;
+const uint8_t kbrightnessMax = 100;
+const uint16_t kRepeatMax = UINT16_MAX;
+const unsigned long kRepeatDelayMax = kULongMax-kOneHundredMs;
+const unsigned long kInitDelayMax = kULongMax-kOneSecInMs;
+const unsigned long kFrameDelayMax = kULongMax;
+const uint16_t kRepeatTimesMax = UINT16_MAX;
 
 // EEPROM setup. saves all values in eeprom. the mega has 4kb of eeprom storage
 // the current address in the EEPROM (i.e. which byte we're going to write to next)
 
 // set addresses for save
-#define addrframeDelay 0                        // default for the frame delay
-#define addrinitDelay 10                        // Variable for delay between button press and start of light sequence
-#define addrrepeat 20                           // Variable to select auto repeat (until select button is pressed again)
-#define addrrepeatDelay 30                     // Variable for delay between repeats
-#define addrrepeatTimes 40                      // Variable to keep track of number of repeats
-#define addrbrightness 50                       // Variable and default for the Brightness of the strip
+const uint8_t kAddrFrameDelay = 0; // default for the frame delay
+const uint8_t kAddrInitDelay = 10; // Variable for delay between button press and start of light sequence
+const uint8_t kAddrRepeat = 20;    // Variable to select auto repeat (until select button is pressed again)
+const uint8_t kAddrRepeatDelay = 30; // Variable for delay between repeats
+const uint8_t kAddrRepeatTimes = 40;  // Variable to keep track of number of repeats
+const uint8_t kAddrBrightness = 50;  // Variable and default for the Brightness of the strip
 
 
 LogicValues::LogicValues() :
-  frameDelay(DEFAULT_FRAME_DELAY),
-  initDelay(DEFAULT_INIT_DELAY),
-  repeat(DEFAULT_REPEAT),
-  repeatDelay(DEFAULT_REPEAT_DELAY),
-  repeatTimes(DEFAULT_REPEAT_TIMES),
-  brightness(DEFAULT_BRIGHTNESS)
+  frame_delay_(kDefaultFrameDelay),
+  init_delay_(kDefaultInitDelay),
+  repeat_(kDefaultRepeat),
+  repeat_delay_(kDefaultRepeatDelay),
+  repeat_times_(kDefaultRepeatTimes),
+  brightness_(kDefaultBrightness)
 {
   
 }
 
-unsigned long  LogicValues::getFrameDelay() const
+unsigned long  LogicValues::GetFrameDelay() const
 {
-  return frameDelay;
+  return frame_delay_;
 }
 
-void LogicValues::increaseFrameDelay()
+void LogicValues::IncreaseFrameDelay()
 {
-  if(frameDelay < FRAME_DELAY_MAX)
-    frameDelay++;
+  if(frame_delay_ < kFrameDelayMax)
+    frame_delay_++;
 }
 
-void LogicValues::decreaseFrameDelay()
+void LogicValues::DecreaseFrameDelay()
 {
-  if(frameDelay > 0)
-    frameDelay--;
+  if(frame_delay_ > 0)
+    frame_delay_--;
 }
 
-unsigned long LogicValues::getInitDelay() const
+unsigned long LogicValues::GetInitDelay() const
 {
-  return initDelay;
+  return init_delay_;
 }
 
-void LogicValues::increaseInitDelay1Sec()
+void LogicValues::IncreaseInitDelay1Sec()
 {
-  if(initDelay <= INIT_DELAY_MAX)
-    initDelay += OneSecInMs;
+  if(init_delay_ <= kInitDelayMax)
+    init_delay_ += kOneSecInMs;
 }
   
-void LogicValues::decreaseInitDelay1Sec()
+void LogicValues::DecreaseInitDelay1Sec()
 {
-  if(initDelay >= OneSecInMs)
-    initDelay -= OneSecInMs;
+  if(init_delay_ >= kOneSecInMs)
+    init_delay_ -= kOneSecInMs;
 }
 
-uint16_t LogicValues::getRepeat() const
+uint16_t LogicValues::GetRepeat() const
 {
-  return repeat;
+  return repeat_;
 }
 
-void LogicValues::increaseRepeat()
+void LogicValues::IncreaseRepeat()
 {
-  if(repeat < REPEAT_MAX)
-    repeat++;
+  if(repeat_ < kRepeatMax)
+    repeat_++;
 }
 
-void LogicValues::decreaseRepeat()
+void LogicValues::DecreaseRepeat()
 {
-  if(repeat > 0)
-    repeat--;
+  if(repeat_ > 0)
+    repeat_--;
 }
 
-unsigned long LogicValues::getRepeatDelay() const
+unsigned long LogicValues::GetRepeatDelay() const
 {
-  return repeatDelay;
+  return repeat_delay_;
 }
 
-void LogicValues::increaseRepeatDelay()
+void LogicValues::IncreaseRepeatDelay()
 {
-  if(repeatDelay <= REPEAT_DELAY_MAX)
-    repeatDelay += OneHundredMs;
+  if(repeat_delay_ <= kRepeatDelayMax)
+    repeat_delay_ += kOneHundredMs;
 }
 
-void LogicValues::decreaseRepeatDelay()
+void LogicValues::DecreaseRepeatDelay()
 {
-  if(repeatDelay >= OneHundredMs)
-    repeatDelay -= OneHundredMs;
+  if(repeat_delay_ >= kOneHundredMs)
+    repeat_delay_ -= kOneHundredMs;
 }
 
-uint16_t LogicValues::getRepeatTimes() const
+uint16_t LogicValues::GetRepeatTimes() const
 {
-  return repeatTimes;
+  return repeat_times_;
 }
 
-void LogicValues::increaseRepeatTimes()
+void LogicValues::IncreaseRepeatTimes()
 {
-  if(repeatTimes < REPEAT_TIMES_MAX)
-    repeatTimes++;
+  if(repeat_times_ < kRepeatTimesMax)
+    repeat_times_++;
 }
 
-void LogicValues::decreaseRepeatTimes()
+void LogicValues::DecreaseRepeatTimes()
 {
-  if(repeatTimes > 0)
-    repeatTimes--;
+  if(repeat_times_ > 0)
+    repeat_times_--;
 }
 
-uint8_t LogicValues::getBrightness() const
+uint8_t LogicValues::GetBrightness() const
 {
-  return brightness;
+  return brightness_;
 }
 
-void LogicValues::setBrightness(uint8_t value)
+void LogicValues::SetBrightness(uint8_t value)
 {
-  if(value <= BRIGHTNESS_MAX)
-    brightness = value;
+  if(value <= kbrightnessMax)
+    brightness_ = value;
 }
 
-void LogicValues::increaseBrightness()
+void LogicValues::IncreaseBrightness()
 {
-  if(brightness <= BRIGHTNESS_MAX)
-    brightness++;
+  if(brightness_ <= kbrightnessMax)
+    brightness_++;
 }
 
-void LogicValues::decreaseBrightness()
+void LogicValues::DecreaseBrightness()
 {
-  if(brightness > 0)
-    brightness--;
+  if(brightness_ > 0)
+    brightness_--;
 }
 
-void LogicValues::storeValuesToEeprom()
+void LogicValues::StoreValuesToEeprom()
 {
-  unsigned long valULong;
-  uint16_t valUint16;
+  unsigned long val_ulong;
+  uint16_t val_uint16;
   uint8_t val;
 
-  valULong = eepromReadULong(addrframeDelay);
-  if (valULong != frameDelay) {
-    eepromWriteULong(addrframeDelay, frameDelay);
+  val_ulong = EepromReadULong(kAddrFrameDelay);
+  if (val_ulong != frame_delay_) {
+    EepromWriteULong(kAddrFrameDelay, frame_delay_);
   }
 
-  valULong = eepromReadULong(addrinitDelay);
-  if (valULong != initDelay) {
-    eepromWriteULong(addrinitDelay, initDelay);
+  val_ulong = EepromReadULong(kAddrInitDelay);
+  if (val_ulong != init_delay_) {
+    EepromWriteULong(kAddrInitDelay, init_delay_);
   }
 
-  valUint16 = eepromReadUint16(addrrepeat);
-  if (valUint16 != repeat) {
-    eepromWriteUint16(addrrepeat, repeat);
+  val_uint16 = EepromReadUint16(kAddrRepeat);
+  if (val_uint16 != repeat_) {
+    EepromWriteUint16(kAddrRepeat, repeat_);
   }
 
-  valULong = eepromReadULong(addrrepeatDelay);
-  if (valULong != repeatDelay) {
-    eepromWriteULong(addrrepeatDelay, repeatDelay);
+  val_ulong = EepromReadULong(kAddrRepeatDelay);
+  if (val_ulong != repeat_delay_) {
+    EepromWriteULong(kAddrRepeatDelay, repeat_delay_);
   }
 
-  valUint16 = eepromReadUint16(addrrepeatTimes);
-  if (valULong != repeatTimes) {
-    eepromWriteUint16(addrrepeatTimes, repeatTimes);
+  val_uint16 = EepromReadUint16(kAddrRepeatTimes);
+  if (val_ulong != repeat_times_) {
+    EepromWriteUint16(kAddrRepeatTimes, repeat_times_);
   }
 
-  val = EEPROM.read(addrbrightness);
-  if (val != brightness) {
-    EEPROM.write(addrbrightness, brightness);
+  val = EEPROM.read(kAddrBrightness);
+  if (val != brightness_) {
+    EEPROM.write(kAddrBrightness, brightness_);
   }
 }
 
-void LogicValues::restoreValuesFromEeprom()
+void LogicValues::RestoreValuesFromEeprom()
 {
-  unsigned long valULong;
-  uint16_t valUint16;
+  unsigned long val_ulong;
+  uint16_t val_uint16;
   uint8_t val;
 
-  valULong = eepromReadULong(addrframeDelay);
-  if (valULong >= 1 && valULong <= FRAME_DELAY_MAX) {
-    frameDelay = valULong;
+  val_ulong = EepromReadULong(kAddrFrameDelay);
+  if (val_ulong >= 1 && val_ulong <= kFrameDelayMax) {
+    frame_delay_ = val_ulong;
   }
 
-  valULong = eepromReadULong(addrinitDelay);
-  if (valULong >= 1 && valULong <= INIT_DELAY_MAX) {
-    initDelay = valULong;
+  val_ulong = EepromReadULong(kAddrInitDelay);
+  if (val_ulong >= 1 && val_ulong <= kInitDelayMax) {
+    init_delay_ = val_ulong;
   }
 
-  valUint16 = eepromReadUint16(addrrepeat);
-  if (valUint16 >= 1 && valUint16 <= REPEAT_MAX) {
-    repeat = valUint16;
+  val_uint16 = EepromReadUint16(kAddrRepeat);
+  if (val_uint16 >= 1 && val_uint16 <= kRepeatMax) {
+    repeat_ = val_uint16;
   }
 
-  valULong = eepromReadULong(addrrepeatDelay);
-  if (valULong >= 1 && valULong <= REPEAT_DELAY_MAX) {
-    repeatDelay = valULong;
+  val_ulong = EepromReadULong(kAddrRepeatDelay);
+  if (val_ulong >= 1 && val_ulong <= kRepeatDelayMax) {
+    repeat_delay_ = val_ulong;
   }
 
-  valUint16 = eepromReadUint16(addrrepeatTimes);
-  if (valULong >= 1 && valULong <= REPEAT_TIMES_MAX) {
-    repeatTimes = valULong;
+  val_uint16 = EepromReadUint16(kAddrRepeatTimes);
+  if (val_ulong >= 1 && val_ulong <= kRepeatTimesMax) {
+    repeat_times_ = val_ulong;
   }
 
-  val = EEPROM.read(addrbrightness);
-  if (val >= 1 && val <= BRIGHTNESS_MAX) {
-    brightness = val;
+  val = EEPROM.read(kAddrBrightness);
+  if (val >= 1 && val <= kbrightnessMax) {
+    brightness_ = val;
   }
  
 }
 
-void LogicValues::resetValuesToDefault()
+void LogicValues::ResetValuesToDefault()
 {
-  frameDelay = DEFAULT_FRAME_DELAY;
-  initDelay = DEFAULT_INIT_DELAY;
-  repeat = DEFAULT_REPEAT;
-  repeatDelay = DEFAULT_REPEAT_DELAY;
-  repeatTimes = DEFAULT_REPEAT_TIMES;
-  brightness = DEFAULT_BRIGHTNESS;
+  frame_delay_ = kDefaultFrameDelay;
+  init_delay_ = kDefaultInitDelay;
+  repeat_ = kDefaultRepeat;
+  repeat_delay_ = kDefaultRepeatDelay;
+  repeat_times_ = kDefaultRepeatTimes;
+  brightness_ = kDefaultBrightness;
 
-  storeValuesToEeprom();
+  StoreValuesToEeprom();
 }
   
-uint16_t LogicValues::eepromReadUint16(uint8_t address) {
+uint16_t LogicValues::EepromReadUint16(uint8_t address) {
   uint16_t one = EEPROM.read(address);
   uint16_t two = EEPROM.read(address + 1);
   
   return ((one << 0) & 0xFF) + ((two << 8) & 0xFFFF);
 }
 
-void LogicValues::eepromWriteUint16(uint8_t address, unsigned long value) {
+void LogicValues::EepromWriteUint16(uint8_t address, unsigned long value) {
   byte two = (value & 0xFF);
   byte one = ((value >> 8) & 0xFF);
   
@@ -254,7 +247,7 @@ void LogicValues::eepromWriteUint16(uint8_t address, unsigned long value) {
   EEPROM.write(address + 1, two);
 }
 
-unsigned long LogicValues::eepromReadULong(uint8_t address) {
+unsigned long LogicValues::EepromReadULong(uint8_t address) {
   unsigned long one = EEPROM.read(address);
   unsigned long two = EEPROM.read(address + 1);
   unsigned long three = EEPROM.read(address + 2);
@@ -263,7 +256,7 @@ unsigned long LogicValues::eepromReadULong(uint8_t address) {
   return ((one << 0) & 0xFF) + ((two << 8) & 0xFFFF) + ((three << 16) & 0xFFFFFF) + ((four << 24) & 0xFFFFFFFF);
 }
 
-void LogicValues::eepromWriteULong(uint8_t address, unsigned long value) {
+void LogicValues::EepromWriteULong(uint8_t address, unsigned long value) {
   byte one = (value & 0xFF);
   byte two = ((value >> 8) & 0xFF);
   byte three = ((value >> 16) & 0xFF);

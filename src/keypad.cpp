@@ -5,51 +5,51 @@
 #include "keypad.h"
 
 KeyPad::KeyPad() :
-  oldkey(key_error)
+  old_key_(kError)
 {
   
 }
 
-void KeyPad::setup() {
-  pinMode(DOWNPIN, INPUT_PULLUP);
-  pinMode(LEFTPIN, INPUT_PULLUP);
-  pinMode(RIGHTPIN, INPUT_PULLUP);
-  pinMode(ENTPIN, INPUT_PULLUP);
-  pinMode(UPPIN, INPUT_PULLUP);
+void KeyPad::Setup() {
+  pinMode(kDownPin, INPUT_PULLUP);
+  pinMode(kLeftPin, INPUT_PULLUP);
+  pinMode(kRightPin, INPUT_PULLUP);
+  pinMode(kEntPin, INPUT_PULLUP);
+  pinMode(kUpPin, INPUT_PULLUP);
 }
 
-KeyPad::key_val KeyPad::read() {
-  key_val value = read_value();
+KeyPad::KeyVal KeyPad::Read() {
+  KeyVal value = ReadValue();
 
-  if (value != oldkey) {                    // if keypress is detected
+  if (value != old_key_) {                 // if keypress is detected
     delay(250);                            // wait for debounce time
-    value = read_value();
-    if (value != oldkey) {
-      oldkey = value;
+    value = ReadValue();
+    if (value != old_key_) {
+      old_key_ = value;
       return value;
     }
   }
-  return oldkey;
+  return old_key_;
 }
 
-KeyPad::key_val KeyPad::getLastReadedKey()
+KeyPad::KeyVal KeyPad::GetLastReadedKey()
 {
-  return oldkey;
+  return old_key_;
 }
 
-KeyPad::key_val KeyPad::read_value() {
-  key_val value = KeyPad::key_error;
+KeyPad::KeyVal KeyPad::ReadValue() {
+  KeyVal value = KeyPad::kError;
 
-  if (digitalRead(UPPIN) == LOW) {
-    value = KeyPad::key_up;
-  } else if (digitalRead(DOWNPIN) == LOW) {
-    value = KeyPad::key_down;
-  } else if (digitalRead(LEFTPIN) == LOW) {
-    value = KeyPad::key_left;
-  } else if (digitalRead(RIGHTPIN) == LOW) { 
-    value = KeyPad::key_right;
-  } else if (digitalRead(ENTPIN) == LOW) { 
-    value = KeyPad::key_enter;
+  if (digitalRead(kUpPin) == LOW) {
+    value = KeyPad::kUp;
+  } else if (digitalRead(kDownPin) == LOW) {
+    value = KeyPad::kDown;
+  } else if (digitalRead(kLeftPin) == LOW) {
+    value = KeyPad::kLeft;
+  } else if (digitalRead(kRightPin) == LOW) { 
+    value = KeyPad::kRight;
+  } else if (digitalRead(kEntPin) == LOW) { 
+    value = KeyPad::kEnter;
   } 
 
   return value;

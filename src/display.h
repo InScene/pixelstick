@@ -7,25 +7,31 @@
 #include <Adafruit_SSD1306.h>
 #include "text_defines.h"
 
-#define DISPLAY_ARRAY_SIZE_MAX 5
 class Display
 {
   public:
+    const uint8_t kDisplayArraySizeMax  = 5;
+
     Display();
     ~Display();
 
-    void setup();
-    void set(const String& header, const String texts[], uint8_t sizeTexts);
-    void set(const String& header, const String& text, const String& text2, 
+    void Setup();
+    void Set(const String& header, const char* const texts[], uint8_t sizeTexts);
+    void Set(const String& header, const String& text, const String& text2, 
              const uint16_t value, const String text3 = "Value: ");   
-    void set(const String& header, const String& text, const String& text2, 
+    void Set(const String& header, const String& text, const String& text2, 
             const unsigned long value, const String text3 = "Value: ");
-    void set(const String& header, const String& text, const String text2 ="");
-    void set(const String& header, const String& text, const String& text2, 
+    void Set(const String& header, const String& text, const String text2 ="");
+    void Set(const String& header, const String& text, const String& text2, 
              const String& text3);
 
   private:
-    Adafruit_SSD1306 lcd;
+    const uint8_t kScreenWidth = 128; // OLED display width, in pixels
+    const uint8_t kScreenHeight = 64; // OLED display height, in pixels
+    const int kOledReset = -1; // Reset pin # (or -1 if sharing Arduino reset pin)
+    const uint16_t kTextColor = SSD1306_WHITE;
+
+    Adafruit_SSD1306 lcd_;
 };
 
 #endif // __DISPLAY_H__

@@ -40,41 +40,41 @@ void setup() {
 
    //Serial.begin(9600);
 
-  logicValues.restoreValuesFromEeprom();
+  logicValues.RestoreValuesFromEeprom();
   
-  display.setup();
+  display.Setup();
   
   // Print copyright on display
-  display.set(MENU_HEADER, COPYRIGHT_TEXTS, LINES_COPYRIGHT);
+  display.Set(kMenuHeader, kCopyrightTexts, kLinesCopyright);
   delay(3000);
   
-  keypad.setup();
+  keypad.Setup();
 
-  stripHandler.setup();
+  stripHandler.Setup();
   
-  if(!filehandler.setup()) {
+  if(!filehandler.Setup()) {
     // On error display error msg and reset arduino
-    display.set(MENU_HEADER, ERROR_HEADER, "SD init failed! ", "Automatically  reboot");
+    display.Set(kMenuHeader, kErrorHeader, "SD init failed! ", "Automatically  reboot");
     delay(3000);
     softwareReset::standard();
   } else {
-    display.set(MENU_HEADER, "SD init done.   ");
+    display.Set(kMenuHeader, "SD init done.   ");
     delay(1000);
   }
 
-  display.set(MENU_HEADER, "Scanning files  ");
+  display.Set(kMenuHeader, "Scanning files  ");
   delay(500);
-  filehandler.scanForFiles();
+  filehandler.ScanForFiles();
 
-  stripHandler.clear();
+  stripHandler.Clear();
 
-  state_machine_setup();
+  StateMachineSetup();
 }
 
 // The Main Loop for the program starts here...
 // This will loop endlessly looking for a key press to perform a function
 void loop() {
-  keypad.read();
+  keypad.Read();
   machine.run();
   delay(500);
 }

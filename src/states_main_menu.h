@@ -6,20 +6,20 @@
 
 #include "global.h"
 
-void s1_file() {
+void S1_file() {
   if(machine.executeOnce){
     #ifdef STATE_DEBUG
-      Serial.println("State s1_file");
+      Serial.println("State S1_file");
     #endif
-    display.set(MENU_HEADER, MENU_MAIN_HEADER, MENU_MAIN_FILE);
+    display.Set(kMenuHeader, kMenuMainHeader, kMenuMainFile);
   }
 }
 
 /**
- * Transition from state s1_file to s1_1_file_select.
+ * Transition from state S1_file to S1_1_FileSelect.
  */
-bool transitionS1_to_S1_1() {
-  if(keypad.getLastReadedKey() == KeyPad::key_enter){
+bool TransitionS1_to_S1_1() {
+  if(keypad.GetLastReadedKey() == KeyPad::kEnter){
     return true;
   }
 
