@@ -16,7 +16,7 @@ class Display
     ~Display();
 
     void Setup();
-    void Set(const String& header, const String texts[], uint8_t sizeTexts);
+    void Set(const String& header, const char* const texts[], uint8_t sizeTexts);
     void Set(const String& header, const String& text, const String& text2, 
              const uint16_t value, const String text3 = "Value: ");   
     void Set(const String& header, const String& text, const String& text2, 

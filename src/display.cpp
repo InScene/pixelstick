@@ -28,7 +28,7 @@ void Display::Setup()
   delay(100);
 }
 
-void Display::Set(const String& header, const String texts[], uint8_t sizeTexts)
+void Display::Set(const String& header, const char* const texts[], uint8_t sizeTexts)
 {
   if(sizeTexts > kDisplayArraySizeMax) {
     sizeTexts = kDisplayArraySizeMax;
